@@ -1,0 +1,256 @@
+// Switch to SampleCollections database
+// use("SampleCollections");
+
+// 1) Rechercher tous les films dont la description comprend “documentary” et de catégorie “horror”
+db.Sakila_films.find({
+    Description: /documentary/i,
+    Category: "Horror"
+});
+
+// 2) Donner le nombre de films en rating “G”
+db.Sakila_films.count({
+    Rating: "G"
+});
+db.Sakila_films.find({
+    Rating: "G"
+}).count();
+
+// 3) Rechercher tous les films de 2013 ou 2012 dont la durée est entre 60 et 150 minutes
+db.video_movieDetails.find({ 
+    $or: [{year: 2012},{year: 2013}], 
+    runtime: { $gte: 60, $lte: 150 }
+});
+db.video_movieDetails.find( {
+    runtime: {$gte: 60, $lte: 150}, 
+    year: {$in: [2012, 2013]}
+});
+
+// 4) Rechercher tous les films qui ont une image certified sur tomato
+db.video_movieDetails.find({
+    "tomato.image": "certified"
+});
+
+// 5) Rechercher tous les films avec l’acteur ED CHASE
+db.Sakila_films.find({
+    Actors: {
+        $elemMatch: { 
+            "First name": "ED", 
+            "Last name": "CHASE",
+        }
+    }
+});
+
+// 6) Afficher tous les rated (“PG”, “PG-13”, ...) et le nombre de films pour chacun
+db.Sakila_films.aggregate([
+    { $match: {Category: {$ne: "Horror"}} },
+    { $group: {
+        _id: "$Rating",
+        count: {$sum: 1},
+        movies: {$addToSet: {
+            title: "$Title",
+            length: "$Length"
+        }}
+    }},
+    { $match: {count: {$gt: 150}} },
+    { $sort: {count: 1} },
+    { $project: {count: 1} }
+]);
+// SELECT
+//     Rating,
+//     SUM(1) as COUNT
+// FROM Sakila_films
+// WHERE Category != 'Horror'
+// GROUP BY Rating
+// HAVING COUNT(1) > 200
+// ORDER BY 2 ASC
+
+
+
+// AGGREGATE - Exemple 1 list de produits par order => list d'order par produit
+db.DBEnvyLoad_orders.aggregate([
+    {$unwind: "$lineItems"}
+    {$group: {_id: "$lineItems.prodId", 
+        avg_ordered: {$avg: "$lineItems.prodCount"},
+        orders: {$addToSet: {
+            order_id: "$_id",
+            cust_id: "$CustId"
+        }}
+    }}
+]);
+
+// AGGREGATE - Exemple 2
+// La liste des produits avec la moyenne de nombre par commandes
+// (du custId: 62933)
+db.DBEnvyLoad_orders.aggregate([
+    {$match: {"CustId": 62933}},
+    {$unwind: "$lineItems"},
+    {$group : {
+        _id: "$lineItems.prodId", 
+        avg_ordered: {$avg: "$lineItems.prodCount"},
+        orders: {$addToSet: {
+            order_id: "$_id",
+            cust_id: "$CustId"
+        }}
+    }},
+    {$sort: {_id: 1}}
+]);
+
+// AGGREGATE - Exemple 3
+// La liste des produits avec la moyenne de nombre par commandes (globale)
+// dont les produits ont été commandé au moins une fois par custId: 62933
+db.DBEnvyLoad_orders.aggregate([
+    {$unwind: "$lineItems"},
+    {$group : {
+        _id: "$lineItems.prodId", 
+        avg_ordered: {$avg: "$lineItems.prodCount"},
+        orders: {$addToSet: {
+            order_id: "$_id",
+            cust_id: "$CustId"
+        }}
+    }},
+    {$match: {"orders.cust_id": 62933}},
+    {$sort: {_id: 1}}
+]);
+
+// AGGREGATE - double unwind pour multiples niveaux de tableaux
+db.testCollection.insertMany([{
+    lineItems: [
+        {
+            prodId: 1,
+            prices: [
+                {symbol: "€", amount: "5560"},
+                {symbol: "$", amount: "4560"}
+            ]
+        },
+        {
+            prodId: 2,
+            prices: [
+                {symbol: "€", amount: "6560"},
+                {symbol: "$", amount: "4560"}
+            ]
+        }
+    ]
+},
+{
+    lineItems: [
+        {
+            prodId: 3,
+            prices: [
+                {symbol: "€", amount: "9560"},
+                {symbol: "$", amount: "8560"}
+            ]
+        },
+        {
+            prodId: 2,
+            prices: [
+                {symbol: "€", amount: "6560"},
+                {symbol: "$", amount: "4560"}
+            ]
+        }
+    ]
+}])
+db.testCollection.find();
+db.testCollection.aggregate([
+    {$unwind: "$lineItems"},
+    {$unwind: "$lineItems.prices"}
+])
+
+
+// AGGREGATE - Exo 1) La liste des films triés par ordre de parution qui ont eu une note imdb > 8 par Acteur par Rating avec la moyenne des notes imdb par Rating
+db.video_movieDetails.aggregate([
+    {$match: {"imdb.rating": {$gte: 8}}},
+    {$sort: {year: 1}},
+    {$unwind: "$actors"},
+    {$group: {
+        _id: {actor: "$actors", rated: "$rated"},
+        avg_imdb: {$avg: "$imdb.rating"},
+        movies: {$addToSet: {title: "$title", note: "$imdb.rating"}}
+    }},
+    {$group: {
+        _id: "$_id.actor",
+        ratings: {
+            $addToSet: {
+                rated: "$_id.rated",
+                avg_imdb: "$avg_imdb",
+                movies: "$movies"
+            }
+        }
+    }},
+])
+
+// AGGREGATE - Exo 2) Lister pour chaque genre de films, les différents rated avec le pire film et le meilleur film selon imdb
+db.video_movieDetails.aggregate([
+    { $unwind: "$genres" },
+    { $group: {
+        _id: {genre: "$genres", rated: "$rated"},
+        pire: { $min: {
+                rating: "$imdb.rating",
+                title: "$title"
+        }},
+        meilleur: { $max: {
+                rating: "$imdb.rating",
+                title: "$title"
+        }},
+    }},
+    { $group: {
+        _id: "$_id.genre",
+        ratings: {
+            $addToSet: {
+                rated: '$_id.rated',
+                pire: '$pire',
+                meilleur: '$meilleur'
+            }
+        }
+    }},
+    {$sort: {_id: 1}}
+]);
+
+db.video_movieDetails.aggregate([
+    {$sort: {"imdb.rating": 1}},
+    {$unwind: "$genres"},
+    {$group: {
+        "_id": {rated: "$rated", genre: "$genres"},
+        bestMovieTitle: {$last: '$title'},
+        bestMovieNote: {$last: '$imdb.rating'},
+        worstMovieTitle: {$first: '$title'},
+        worstMovieNote: {$first: '$imdb.rating'},
+    }},
+    {$group: {
+        "_id": "$_id.genre",
+        ratings: {
+            $addToSet: {
+                rating: "$_id.rated",
+                bestMovie: {
+                    title: "$bestMovieTitle",
+                    note: "$bestMovieNote",
+                },
+                worstMovie: {
+                    title: "$worstMovieTitle",
+                    note: "$worstMovieNote",
+                }
+            }
+        }
+    }},
+    {$sort: {_id: 1}}
+]);
+
+
+
+db.video_movieDetails.aggregate([
+    {$match: {'imdb.rating': {$gt: 8}}},
+    {$sort: {released: 1}},
+    {$unwind: '$actors'},
+    {
+        $group: {
+            _id: '$actors',
+            ratings: {
+                $addToSet: {
+                    rating: '$rated',
+                    avg_note: {$avg: '$imdb.rating'},
+                    title: '$title',
+                    note: '$imdb.rating'
+                }
+            },
+        }
+    },
+])

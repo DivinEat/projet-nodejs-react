@@ -1,0 +1,13 @@
+POST http://localhost:3000/weathers
+Content-Type: application/json
+
+{"tempmin": 10, "tempmax": 20, "datetime": "2021-05-11", "description": "Test"}
+
+###
+PUT http://localhost:3000/weathers/609be918173206bb3202f67d
+Content-Type: application/json
+
+{"tempmin": 3}
+
+###
+GET http://localhost:3000/weathers?datetime=2020-03-04&startsWith[description]=Confinement
