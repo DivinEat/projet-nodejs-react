@@ -1,17 +1,45 @@
 <html>
     <body>
+        <h1>Paiement</h1>
+
         <ul>
         {{#items}}
             <li>{{title}} {{quantity}}</li>
         {{/items}}
         </ul>
+
         <form method="POST">
+            <h2>Informations sur la livraison</h2>
+            <label for="deliveryAddress">Adresse de livraison</label>
+            <input name="deliveryAddress"/>
+            <label for="deliveryPostCode">Code postal</label>
+            <input name="deliveryPostCode"/>
+
+            <br>
+
+            <h2>Informations sur la facturation</h2>
+            <label for="invoiceAddress">Adresse de facturation</label>
+            <input name="invoiceAddress"/>
+            <label for="invoicePostCode">Code postal</label>
+            <input name="invoicePostCode"/>
+
+            <br>
+
+            <h2>Informations sur le paiement</h2>
+            <label for="cardHolder">Titulaire de la carte</label>
             <input name="cardHolder"/>
+            <label for="cardNumber">Numéro de carte</label>
             <input name="cardNumber"/>
+            <label for="cardDate">Date d'expiration</label>
             <input name="cardDate" type="date"/>
+            <label for="cardCVV">CVV</label>
             <input name="cardCVV"/>
+
+            <br>
+
             <input type="submit" value="Payer"/>
         </form>
+
         {{#success}}Payment proceed{{/success}}
     </body>
 </html>
