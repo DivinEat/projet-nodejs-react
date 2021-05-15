@@ -4,7 +4,7 @@ Content-Type: application/json
 {"tempmin": 10, "tempmax": 20, "datetime": "2021-05-11", "description": "Test"}
 
 ###
-PUT http://localhost:3000/weathers/609be918173206bb3202f67d
+PUT http://localhost:3000/weathers/609f9e79a3d9c4001fff91a7
 Content-Type: application/json
 
 {"tempmin": 3}
