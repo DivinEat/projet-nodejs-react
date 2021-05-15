@@ -11,3 +11,50 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/weathers?datetime=2020-03-04&startsWith[description]=Confinement
+
+###
+GET http://localhost:3000/users
+
+###
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "username": "test2@test.fr",
+    "password": "test"
+}
+
+###
+GET http://localhost:3000/users/1
+
+###
+PUT http://localhost:3000/users/5
+Content-Type: application/json
+
+{
+    "password": "test4"
+}
+
+###
+DELETE http://localhost:3000/users/1
+
+###
+GET http://localhost:3000/articles
+
+###
+PUT http://localhost:3000/articles/2
+Content-Type: application/json
+
+{
+    "title": "foo"
+}
+###
+POST http://localhost:3000/articles
+Content-Type: application/json
+
+{
+    "title": "test",
+    "content": "test content",
+    "tags": ["test"],
+    "authorId": 5
+}

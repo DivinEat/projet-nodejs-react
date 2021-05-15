@@ -1,60 +1,22 @@
 const express = require("express");
-const Weather = require("./models/mongo/Weather");
+const UserRouter = require("./routes/UserRouter");
+const ArticleRouter = require("./routes/ArticleRouter");
+const WeatherRouter = require("./routes/WeatherRouter");
+const PaymentRouter = require("./routes/PaymentRouter");
+const mustacheExpress = require("mustache-express");
 
 const app = express();
+app.engine("mustache", mustacheExpress());
+app.set("view engine", "mustache");
+app.set("views", __dirname + "/views");
 
 app.use(express.json());
+app.use(express.urlencoded());
 
-const prettifyValidationErrors = (errors) =>
-  Object.keys(errors).reduce((acc, err) => {
-    acc[err] = errors[err].message;
-    return acc;
-  }, {});
-
-app.get("/weathers", (request, response) => {
-  Weather.find(request.query)
-    .then((data) => response.json(data))
-    .catch((e) => response.sendStatus(500));
-});
-app.post("/weathers", (req, res) => {
-  new Weather(req.body)
-    .save()
-    .then((data) => res.status(201).json(data))
-    .catch((e) => {
-      if (e.name === "ValidationError") {
-        res.status(400).json(prettifyValidationErrors(e.errors));
-      } else {
-        res.sendStatus(500);
-      }
-    });
-});
-app.get("/weathers/:id", (request, response) => {
-  const { id } = request.params;
-  Weather.findById(id)
-    .then((data) =>
-      data === null ? response.sendStatus(404) : response.json(data)
-    )
-    .catch((e) => response.sendStatus(500));
-});
-app.put("/weathers/:id", (req, res) => {
-  const { id } = req.params;
-  Weather.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
-    .then((data) => res.status(200).json(data))
-    .catch((e) => {
-      if (e.name === "ValidationError") {
-        res.status(400).json(prettifyValidationErrors(e.errors));
-      } else {
-        res.sendStatus(500);
-      }
-    });
-});
-app.delete("/weathers/:id", (request, response) => {
-  const { id } = request.params;
-  Weather.findByIdAndDelete(id)
-    .then((data) =>
-      data === null ? response.sendStatus(404) : response.sendStatus(204)
-    )
-    .catch((e) => response.sendStatus(500));
-});
+// User sequelize
+app.use("/users", UserRouter);
+app.use("/articles", ArticleRouter);
+app.use("/weathers", WeatherRouter);
+app.use("/payment", PaymentRouter);
 
 app.listen(process.env.PORT || 3000, () => console.log("server listening"));
