@@ -77,14 +77,20 @@ Content-Type: application/json
 GET http://localhost:3000/merchants/1
 
 ###
+GET http://localhost:3000/merchants
+
+###
+GET http://localhost:3000/credentials
+
+###
 POST http://localhost:3000/credentials
 Content-Type: application/json
 
 {
     "clientToken": "token",
     "clientSecret": "secret",
-    "merchantId": 1
+    "merchantId": 2
 }
 
 ###
-GET http://localhost:3000/credentials/1
+DELETE http://localhost:3000/credentials/1
