@@ -58,3 +58,33 @@ Content-Type: application/json
     "tags": ["test"],
     "authorId": 5
 }
+
+###
+POST http://localhost:3000/merchants
+Content-Type: application/json
+
+{
+    "societyName": "mcdo",
+    "kbis": "kbis test",
+    "confirmUrl": "url confirm",
+    "cancelUrl": "url cancel",
+    "currency": "$",
+    "clientToken": "token",
+    "clientSecret": "secret"
+}
+
+###
+GET http://localhost:3000/merchants/1
+
+###
+POST http://localhost:3000/credentials
+Content-Type: application/json
+
+{
+    "clientToken": "token",
+    "clientSecret": "secret",
+    "merchantId": 1
+}
+
+###
+GET http://localhost:3000/credentials/1

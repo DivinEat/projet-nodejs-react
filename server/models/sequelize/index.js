@@ -2,6 +2,8 @@ const connection = require("../../lib/sequelize");
 const User = require("./User");
 const Article = require("./Article");
 const Tag = require("./Tag");
+const Merchant = require("./Merchant");
+const Credential = require("./Credential");
 const UserArticle = require("../mongo/UserArticle");
 
 connection.sync({ alter: true }).then((_) => console.log("Database synced"));
@@ -34,4 +36,6 @@ module.exports = {
   User,
   Article,
   Tag,
+  Merchant,
+  Credential
 };

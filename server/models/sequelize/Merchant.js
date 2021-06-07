@@ -10,8 +10,6 @@ Merchant.init(
     confirmUrl: DataTypes.STRING,
     cancelUrl: DataTypes.STRING,
     currency: DataTypes.STRING,
-    clientToken: DataTypes.STRING,
-    clientSecret: DataTypes.STRING
   },
   {
     sequelize: conn,
