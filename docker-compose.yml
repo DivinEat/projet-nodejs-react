@@ -33,7 +33,19 @@ services:
     volumes:
       - ./server:/home/node/app
     working_dir: /home/node/app
-    command: sh -c "npm start --no-update-notifier"
+    command: sh -c "npm install --no-update-notifier; npm start --no-update-notifier"
+
+  psp:
+    image: node:alpine3.10
+    ports:
+      - 4000:4000
+    environment:
+      PORT: 4000
+      API_URL: http://server/
+    volumes:
+      - ./psp:/home/node/app
+    working_dir: /home/node/app
+    command: sh -c "npm install --no-update-notifier; npm start --no-update-notifier"
 
 volumes:
   db-data: {}
