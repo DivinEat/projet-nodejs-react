@@ -14,6 +14,7 @@ app.set("views", __dirname + "/views");
 
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(cors());
 
 // User sequelize
 app.use("/users", UserRouter);
@@ -22,5 +23,7 @@ app.use("/weathers", WeatherRouter);
 app.use("/payment", PaymentRouter);
 app.use("/merchants", MerchantRouter);
 app.use("/credentials", CredentialRouter);
+app.use(verifyAuthorization);
+app.post("/transactions", (req, res) => res.status(201).json(req.body));
 
 app.listen(process.env.PORT || 3000, () => console.log("server listening"));
