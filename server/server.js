@@ -5,7 +5,9 @@ const WeatherRouter = require("./routes/WeatherRouter");
 const PaymentRouter = require("./routes/PaymentRouter");
 const MerchantRouter = require("./routes/MerchantRouter");
 const CredentialRouter = require("./routes/CredentialRouter");
+const TransactionRouter = require("./routes/TransactionRouter");
 const mustacheExpress = require("mustache-express");
+const cors = require("cors");
 
 const app = express();
 app.engine("mustache", mustacheExpress());
@@ -23,7 +25,8 @@ app.use("/weathers", WeatherRouter);
 app.use("/payment", PaymentRouter);
 app.use("/merchants", MerchantRouter);
 app.use("/credentials", CredentialRouter);
-app.use(verifyAuthorization);
+app.use("/transactions", TransactionRouter);
+// app.use(verifyAuthorization);
 app.post("/transactions", (req, res) => res.status(201).json(req.body));
 
 app.listen(process.env.PORT || 3000, () => console.log("server listening"));

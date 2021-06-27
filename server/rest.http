@@ -16,7 +16,7 @@ GET http://localhost:3000/weathers?datetime=2020-03-04&startsWith[description]=C
 GET http://localhost:3000/users
 
 ###
-POST http://localhost:3000/users
+POST http://localhost:3002/users
 Content-Type: application/json
 
 {
@@ -49,14 +49,14 @@ Content-Type: application/json
     "title": "foo"
 }
 ###
-POST http://localhost:3000/articles
+POST http://localhost:3002/articles
 Content-Type: application/json
 
 {
     "title": "test",
     "content": "test content",
     "tags": ["test"],
-    "authorId": 5
+    "authorId": 1
 }
 
 ###
@@ -80,10 +80,10 @@ GET http://localhost:3000/merchants/1
 GET http://localhost:3000/merchants
 
 ###
-GET http://localhost:3000/credentials
+GET http://localhost:3002/credentials
 
 ###
-POST http://localhost:3000/credentials
+POST http://localhost:3002/credentials
 Content-Type: application/json
 
 {
@@ -91,6 +91,21 @@ Content-Type: application/json
     "clientSecret": "secret",
     "merchantId": 2
 }
+
+###
+POST http://localhost:3002/transactions
+Content-Type: application/json
+
+{
+    "currency": "EUR",
+    "totalPrice": "20000",
+    "shippingAddress": "shippingAddress",
+    "billingAddress": "billingAddress",
+    "consumer": "consumer",
+    "cart": "list"
+}
+
+
 
 ###
 DELETE http://localhost:3000/credentials/1

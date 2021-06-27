@@ -5,12 +5,12 @@ class Transaction extends Model {}
 
 Transaction.init(
     {
-        client: DataTypes.INTEGER,
-        facturation: DataTypes.STRING,
-        livraison: DataTypes.STRING,
-        panier: DataTypes.STRING,
-        montant: DataTypes.STRING,
-        devise: DataTypes.STRING,
+        consumer: DataTypes.STRING,
+        shippingAddress: DataTypes.STRING,
+        billingAddress: DataTypes.STRING,
+        cart: DataTypes.STRING,
+        totalPrice: DataTypes.STRING,
+        currency: DataTypes.STRING,
     },
     {
         sequelize: conn,
