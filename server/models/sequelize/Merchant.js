@@ -9,6 +9,7 @@ Merchant.init(
         kbis: DataTypes.STRING,
         confirmUrl: DataTypes.STRING,
         cancelUrl: DataTypes.STRING,
+        transactionSuccessUrl: DataTypes.STRING,
         currency: DataTypes.STRING,
     },
     {

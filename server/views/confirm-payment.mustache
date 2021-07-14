@@ -2,14 +2,10 @@
     <body>
         <h1>Paiement</h1>
 
-        <ul>
-        {{#items}}
-            <li>{{title}} {{quantity}}</li>
-        {{/items}}
-        </ul>
+        {{ transaction.id }}
 
         <form method="POST">
-            <h2>Informations sur la livraison</h2>
+            {{! <h2>Informations sur la livraison</h2>
             <label for="deliveryAddress">Adresse de livraison</label>
             <input name="deliveryAddress"/>
             <label for="deliveryPostCode">Code postal</label>
@@ -23,7 +19,7 @@
             <label for="invoicePostCode">Code postal</label>
             <input name="invoicePostCode"/>
 
-            <br>
+            <br> }}
 
             <h2>Informations sur le paiement</h2>
             <label for="cardHolder">Titulaire de la carte</label>
@@ -41,5 +37,8 @@
         </form>
 
         {{#success}}Payment proceed{{/success}}
+        <script>
+            console.log({{ transaction }});
+        </script>
     </body>
 </html>

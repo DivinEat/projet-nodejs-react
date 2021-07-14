@@ -1,6 +1,9 @@
 const { Router } = require("express");
-const { Transaction } = require("../models/sequelize");
+const { Transaction, Merchant } = require("../models/sequelize");
 const { prettifyValidationErrors } = require("../lib/utils");
+const http = require("http");
+const TransactionHistory = require("../models/sequelize/TransactionHistory");
+const { route } = require("./ArticleRouter");
 
 const router = Router();
 
@@ -12,14 +15,28 @@ router.get("/", (request, response) => {
         .catch((e) => response.sendStatus(500));
 });
 router.post("/", (req, res) => {
-    new Transaction(req.body)
+    req.body.transaction.status = "INIT";
+
+    new Transaction(req.body.transaction)
         .save()
-        .then((data) => res.status(201).json(data))
+        .then((data) => {
+            new TransactionHistory({
+                initialStatus: null,
+                newStatus: data.dataValues.status,
+                transaction: data.transaction,
+            }).save();
+
+            res.status(201).json({
+                transaction: data,
+                payment_url: `http://localhost:3001/transactions/client-confirm-payment/${data.id}`,
+            });
+        })
         .catch((e) => {
             if (e.name === "SequelizeValidationError") {
                 console.error(e);
                 res.status(400).json(prettifyValidationErrors(e.errors));
             } else {
+                console.error(e);
                 res.sendStatus(500);
             }
         });
@@ -52,5 +69,90 @@ router.delete("/:id", (request, response) => {
         .then((data) => (data === 0 ? response.sendStatus(404) : response.sendStatus(204)))
         .catch((e) => response.sendStatus(500));
 });
+
+router.get("/client-confirm-payment/:transId", (req, res) => {
+    const { transId } = req.params;
+    Transaction.findByPk(transId).then((data) => {
+        res.render("confirm-payment", {
+            transaction: data.dataValues,
+        });
+    });
+});
+
+router.post("/client-confirm-payment/:transId", (req, res) => {
+    const data = JSON.stringify(req.body);
+
+    const postData = JSON.stringify({
+        msg: "Hello World!",
+    });
+
+    const options = {
+        hostname: "psp",
+        port: 4000,
+        path: "/",
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": Buffer.byteLength(data),
+        },
+    };
+
+    const request = http.request(options, (res) => {
+        res.setEncoding("utf8");
+        res.on("data", (chunk) => {
+            console.log(`BODY: ${chunk}`);
+        });
+        res.on("end", () => {
+            console.log("No more data in response.");
+        });
+    });
+
+    request.on("error", (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    // Write data to request body
+    request.write(data);
+    request.end();
+
+    // confirmPayment(JSON.stringify(data));
+
+    // const merchant = Merchant.findOne({ where: { secretKey: data.secretKey } });
+
+    res.redirect("https://google.com");
+});
+
+router.post("/psp-confirm-payment", (req, res) => {
+    const data = req.body;
+    console.log("hey");
+});
+
+async function confirmPayment(data) {
+    const options = {
+        hostname: "localhost",
+        port: 4000,
+        path: "/",
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Content-Length": data.length,
+        },
+    };
+
+    const { http } = require("http");
+
+    const req = http.request(options, (res) => {
+        res.on("data", (d) => {
+            process.stdout.write(d);
+        });
+    });
+
+    req.on("error", (error) => {
+        console.error(error);
+    });
+
+    req.write(data);
+    req.end();
+}
 
 module.exports = router;

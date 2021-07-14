@@ -14,6 +14,6 @@ Operation.init(
     }
 );
 
-Operation.belongsTo(Transaction, { as: "transaction" });
+// Operation.belongsTo(Transaction, { as: "transaction" });
 
 module.exports = Operation;
