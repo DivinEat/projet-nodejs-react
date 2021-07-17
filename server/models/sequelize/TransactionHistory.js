@@ -16,5 +16,6 @@ TransactionHistory.init(
 );
 
 TransactionHistory.belongsTo(Transaction, { as: "transaction" });
+Transaction.hasMany(TransactionHistory, { foreignKey: "transactionId" });
 
 module.exports = TransactionHistory;

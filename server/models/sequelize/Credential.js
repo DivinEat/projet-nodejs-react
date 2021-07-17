@@ -6,7 +6,7 @@ class Credential extends Model {}
 
 Credential.init(
     {
-        clientToken: DataTypes.STRING,
+        clientId: DataTypes.STRING,
         clientSecret: DataTypes.STRING,
         status: DataTypes.BOOLEAN,
     },

@@ -6,6 +6,8 @@ const Merchant = require("./Merchant");
 const Credential = require("./Credential");
 const UserArticle = require("../mongo/UserArticle");
 const Transaction = require("./Transaction");
+const TransactionHistory = require("./TransactionHistory");
+const Operation = require("./Operation");
 
 connection.sync({ alter: true }).then((_) => console.log("Database synced"));
 
@@ -34,4 +36,6 @@ module.exports = {
     Merchant,
     Credential,
     Transaction,
+    TransactionHistory,
+    Operation
 };

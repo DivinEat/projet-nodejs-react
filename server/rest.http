@@ -1,13 +1,20 @@
 POST http://localhost:3000/weathers
 Content-Type: application/json
 
-{"tempmin": 10, "tempmax": 20, "datetime": "2021-05-11", "description": "Test"}
+{
+  "tempmin": 10,
+  "tempmax": 20,
+  "datetime": "2021-05-11",
+  "description": "Test"
+}
 
 ###
 PUT http://localhost:3000/weathers/609f9e79a3d9c4001fff91a7
 Content-Type: application/json
 
-{"tempmin": 3}
+{
+  "tempmin": 3
+}
 
 ###
 GET http://localhost:3000/weathers?datetime=2020-03-04&startsWith[description]=Confinement
@@ -20,8 +27,8 @@ POST http://localhost:3002/users
 Content-Type: application/json
 
 {
-    "username": "test2@test.fr",
-    "password": "test"
+  "username": "test2@test.fr",
+  "password": "test"
 }
 
 ###
@@ -32,7 +39,7 @@ PUT http://localhost:3000/users/5
 Content-Type: application/json
 
 {
-    "password": "test4"
+  "password": "test4"
 }
 
 ###
@@ -46,31 +53,34 @@ PUT http://localhost:3000/articles/2
 Content-Type: application/json
 
 {
-    "title": "foo"
+  "title": "foo"
 }
+
 ###
 POST http://localhost:3002/articles
 Content-Type: application/json
 
 {
-    "title": "test",
-    "content": "test content",
-    "tags": ["test"],
-    "authorId": 1
+  "title": "test",
+  "content": "test content",
+  "tags": [
+    "test"
+  ],
+  "authorId": 1
 }
 
 ###
-POST http://localhost:3000/merchants
+POST http://localhost:3001/merchants
 Content-Type: application/json
 
 {
-    "societyName": "mcdo",
-    "kbis": "kbis test",
-    "confirmUrl": "url confirm",
-    "cancelUrl": "url cancel",
-    "currency": "$",
-    "clientToken": "token",
-    "clientSecret": "secret"
+  "societyName": "Fanc",
+  "kbis": "kbis test",
+  "confirmUrl": "url confirm",
+  "cancelUrl": "url cancel",
+  "currency": "$",
+  "clientToken": "token",
+  "clientSecret": "secret"
 }
 
 ###
@@ -87,24 +97,24 @@ POST http://localhost:3002/credentials
 Content-Type: application/json
 
 {
-    "clientToken": "token",
-    "clientSecret": "secret",
-    "merchantId": 2
+  "clientToken": "token",
+  "clientSecret": "secret",
+  "merchantId": 2
 }
 
 ###
-POST http://localhost:3001/transactions
+POST http://localhost:3001/transactionsq
 Content-Type: application/json
 
 {
-    "transaction": {
-        "currency": "EUR",
-        "totalPrice": "20000",
-        "shippingAddress": "shippingAddress",
-        "billingAddress": "billingAddress",
-        "consumer": "consumer",
-        "cart": "list"
-    }
+  "transaction": {
+    "currency": "EUR",
+    "totalPrice": "20000",
+    "shippingAddress": "shippingAddress",
+    "billingAddress": "billingAddress",
+    "consumer": "consumer",
+    "cart": "list"
+  }
 }
 
 ###
@@ -112,15 +122,15 @@ POST http://localhost:4000/
 Content-Type: application/json
 
 {
-    "currency": "EUR",
-    "totalPrice": "20000",
-    "shippingAddress": "shippingAddress",
-    "billingAddress": "billingAddress",
-    "consumer": "consumer",
-    "cart": "list"
+  "currency": "EUR",
+  "totalPrice": "20000",
+  "shippingAddress": "shippingAddress",
+  "billingAddress": "billingAddress",
+  "consumer": "consumer",
+  "cart": "list"
 }
 
 
 
 ###
-DELETE http://localhost:3000/credentials/1
+DELETE http://localhost:3001/merchants/1

@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 const conn = require("../../lib/sequelize");
-const Operation = require("./Operation");
+const Merchant = require("./Merchant");
 
 class Transaction extends Model {}
 
@@ -20,6 +20,7 @@ Transaction.init(
     }
 );
 
-// Transaction.belongsToMany(Operation, { as: "operations" });
+Transaction.belongsTo(Merchant, { as: "merchant" });
+Merchant.hasMany(Transaction, { foreignKey: "merchantId" });
 
 module.exports = Transaction;

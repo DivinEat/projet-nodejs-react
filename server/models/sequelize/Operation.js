@@ -6,7 +6,8 @@ class Operation extends Model {}
 
 Operation.init(
     {
-        consumer: DataTypes.STRING,
+        amount: DataTypes.STRING,
+        type: DataTypes.STRING,
     },
     {
         sequelize: conn,
@@ -14,6 +15,7 @@ Operation.init(
     }
 );
 
-// Operation.belongsTo(Transaction, { as: "transaction" });
+Operation.belongsTo(Transaction, { as: "transaction" });
+Transaction.hasMany(Operation, { foreignKey: "transactionId" });
 
 module.exports = Operation;

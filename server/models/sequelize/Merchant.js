@@ -11,6 +11,7 @@ Merchant.init(
         cancelUrl: DataTypes.STRING,
         transactionSuccessUrl: DataTypes.STRING,
         currency: DataTypes.STRING,
+        status: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
     },
     {
         sequelize: conn,

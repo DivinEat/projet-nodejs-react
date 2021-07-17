@@ -3,7 +3,7 @@ const { Transaction, Merchant } = require("../models/sequelize");
 const { prettifyValidationErrors } = require("../lib/utils");
 const http = require("http");
 const TransactionHistory = require("../models/sequelize/TransactionHistory");
-const { route } = require("./ArticleRouter");
+const Operation = require("../models/sequelize/Operation");
 
 const router = Router();
 
@@ -19,16 +19,22 @@ router.post("/", (req, res) => {
 
     new Transaction(req.body.transaction)
         .save()
-        .then((data) => {
+        .then((transaction) => {
             new TransactionHistory({
                 initialStatus: null,
-                newStatus: data.dataValues.status,
-                transaction: data.transaction,
+                newStatus: transaction.dataValues.status,
+                transactionId: transaction.dataValues.id,
+            }).save();
+
+            new Operation({
+                amount: transaction.dataValues.amount,
+                type: 'CAPTURE',
+                transactionId: transaction.dataValues.id
             }).save();
 
             res.status(201).json({
-                transaction: data,
-                payment_url: `http://localhost:3001/transactions/client-confirm-payment/${data.id}`,
+                transaction: transaction.dataValues,
+                payment_url: `http://localhost:3001/transactions/client-confirm-payment/${transaction.dataValues.id}`,
             });
         })
         .catch((e) => {
