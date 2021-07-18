@@ -1,3 +1,4 @@
+const User = require("../models/sequelize/User");
 const {Router} = require("express");
 const {Merchant} = require("../models/sequelize");
 const {prettifyValidationErrors} = require("../lib/utils");
@@ -11,13 +12,27 @@ router.get("/", (request, response) => {
 });
 
 router.post("/", (req, res) => {
-    new Merchant(req.body)
-        .save()
-        .then((Merchant) => {
-            const clientSecret = '1';
-            const clientId = '1';
+    const data = req.body;
+    const merchant = data.merchant;
+    const user = data.user;
+    res.header("Access-Control-Allow-Origin", "*");
 
-            res.status(201).json(Merchant)
+    Merchant.create(merchant)
+        .then((merchant) => {
+            user.MerchantId = merchant.id;
+            User.create(user)
+                .then(() => {
+                    res.status(201).json(merchant);
+                })
+                .catch((e) => {
+                    if (e.name === "SequelizeValidationError") {
+                        console.error(e);
+                        res.status(400).json(prettifyValidationErrors(e.errors));
+                    } else {
+                        console.log(e);
+                        res.sendStatus(500);
+                    }
+                });
         })
         .catch((e) => {
             if (e.name === "SequelizeValidationError") {

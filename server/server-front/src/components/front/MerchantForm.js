@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Button from "../../lib/Button";
 
-export default function MerchantForm({ onSubmit, defaultValues }) {
+export default function MerchantForm({onSubmit, defaultValues, registerSuccess, error}) {
     const [values, setValues] = useState(
         defaultValues || {
             societyName: "",
@@ -9,7 +9,9 @@ export default function MerchantForm({ onSubmit, defaultValues }) {
             confirmUrl: "",
             cancelUrl: "",
             transactionSuccessUrl: "",
-            currency: ""
+            currency: "",
+            username: "",
+            password: "",
         }
     );
 
@@ -25,15 +27,32 @@ export default function MerchantForm({ onSubmit, defaultValues }) {
     };
 
     return (
-        <div>
-            <input value={values.societyName} name="societyName" onChange={handleChange} />
-            <input value={values.kbis} name="kbis" onChange={handleChange} />
-            <input value={values.confirmUrl} name="confirmUrl" onChange={handleChange} />
-            <input value={values.cancelUrl} name="cancelUrl" onChange={handleChange} />
-            <input value={values.transactionSuccessUrl} name="transactionSuccessUrl" onChange={handleChange} />
-            <input value={values.currency} name="currency" onChange={handleChange} />
+        <>
+            {registerSuccess === false && (
+                <div>
+                    <p>Merchant</p>
+                    <input value={values.societyName} placeholder="societyName" name="societyName"
+                           onChange={handleChange}/>
+                    <input value={values.kbis} placeholder="kbis" name="kbis" onChange={handleChange}/>
+                    <input value={values.confirmUrl} placeholder="confirmUrl" name="confirmUrl"
+                           onChange={handleChange}/>
+                    <input value={values.cancelUrl} placeholder="cancelUrl" name="cancelUrl" onChange={handleChange}/>
+                    <input value={values.transactionSuccessUrl} placeholder="transactionSuccessUrl"
+                           name="transactionSuccessUrl"
+                           onChange={handleChange}/>
+                    <input value={values.currency} placeholder="currency" name="currency" onChange={handleChange}/>
+                    <p>User</p>
+                    <input value={values.username} placeholder="username" name="username" onChange={handleChange}/>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="password"
+                        onChange={handleChange}
+                    />
 
-            <Button title="Submit" onClick={handleSubmit} />
-        </div>
-    );
+                    <Button title="Submit" onClick={handleSubmit}/>
+                </div>
+            )}
+        </>)
+        ;
 }

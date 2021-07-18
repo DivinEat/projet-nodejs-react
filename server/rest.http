@@ -74,13 +74,19 @@ POST http://localhost:3001/merchants
 Content-Type: application/json
 
 {
-  "societyName": "Fanc",
-  "kbis": "kbis test",
-  "confirmUrl": "url confirm",
-  "cancelUrl": "url cancel",
-  "currency": "$",
-  "clientToken": "token",
-  "clientSecret": "secret"
+  "merchant": {
+    "societyName": "Fanc",
+    "kbis": "kbis test",
+    "confirmUrl": "url confirm",
+    "cancelUrl": "url cancel",
+    "currency": "$",
+    "clientToken": "token",
+    "clientSecret": "secret"
+  },
+  "user": {
+    "username": "lud11@lud.com",
+    "password": "password"
+  }
 }
 
 ###
@@ -134,3 +140,13 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3001/merchants/1
+
+
+###
+POST http://localhost:3001/login
+Content-Type: application/json
+
+{
+  "username": "test2@test.fr",
+  "password": "test"
+}

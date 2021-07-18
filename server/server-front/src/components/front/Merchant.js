@@ -1,9 +1,9 @@
 import MerchantForm from "./MerchantForm";
-import { MerchantContext } from "../../contexts/MerchantContext";
-import { useContext } from "react";
+import {MerchantContext} from "../../contexts/MerchantContext";
+import {useContext} from "react";
 
 export default function Merchant() {
-    const { save } = useContext(MerchantContext);
+    const {save, registerSuccess, error} = useContext(MerchantContext);
     return (
         <>
             <MerchantForm onSubmit={
@@ -13,8 +13,12 @@ export default function Merchant() {
                     values.confirmUrl,
                     values.cancelUrl,
                     values.transactionSuccessUrl,
-                    values.currency
+                    values.currency,
+                    values.username,
+                    values.password
                 )}
+                          registerSuccess={registerSuccess}
+                          error={error}
             />
         </>
     );

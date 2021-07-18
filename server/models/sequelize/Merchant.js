@@ -1,7 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
+const {Model, DataTypes} = require("sequelize");
 const conn = require("../../lib/sequelize");
 
-class Merchant extends Model {}
+class Merchant extends Model {
+}
 
 Merchant.init(
     {
@@ -11,7 +12,7 @@ Merchant.init(
         cancelUrl: DataTypes.STRING,
         transactionSuccessUrl: DataTypes.STRING,
         currency: DataTypes.STRING,
-        status: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
+        status: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false}
     },
     {
         sequelize: conn,
