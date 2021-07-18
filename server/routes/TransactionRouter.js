@@ -1,6 +1,6 @@
-const { Router } = require("express");
-const { Transaction, Merchant } = require("../models/sequelize");
-const { prettifyValidationErrors } = require("../lib/utils");
+const {Router} = require("express");
+const {Transaction, Merchant} = require("../models/sequelize");
+const {prettifyValidationErrors} = require("../lib/utils");
 const http = require("http");
 const TransactionHistory = require("../models/sequelize/TransactionHistory");
 const Operation = require("../models/sequelize/Operation");
@@ -16,6 +16,9 @@ router.get("/", (request, response) => {
 });
 router.post("/", (req, res) => {
     req.body.transaction.status = "INIT";
+
+    // token
+    // req.body.transaction.merchantId = "";
 
     new Transaction(req.body.transaction)
         .save()
@@ -48,15 +51,15 @@ router.post("/", (req, res) => {
         });
 });
 router.get("/:id", (request, response) => {
-    const { id } = request.params;
+    const {id} = request.params;
     Transaction.findByPk(id)
         .then((data) => (data === null ? response.sendStatus(404) : response.json(data)))
         .catch((e) => response.sendStatus(500));
 });
 router.put("/:id", (req, res) => {
-    const { id } = req.params;
+    const {id} = req.params;
     Transaction.update(req.body, {
-        where: { id },
+        where: {id},
         returning: true,
         individualHooks: true,
     })
@@ -70,14 +73,14 @@ router.put("/:id", (req, res) => {
         });
 });
 router.delete("/:id", (request, response) => {
-    const { id } = request.params;
-    Transaction.destroy({ where: { id } })
+    const {id} = request.params;
+    Transaction.destroy({where: {id}})
         .then((data) => (data === 0 ? response.sendStatus(404) : response.sendStatus(204)))
         .catch((e) => response.sendStatus(500));
 });
 
 router.get("/client-confirm-payment/:transId", (req, res) => {
-    const { transId } = req.params;
+    const {transId} = req.params;
     Transaction.findByPk(transId).then((data) => {
         res.render("confirm-payment", {
             transaction: data.dataValues,
@@ -145,7 +148,7 @@ async function confirmPayment(data) {
         },
     };
 
-    const { http } = require("http");
+    const {http} = require("http");
 
     const req = http.request(options, (res) => {
         res.on("data", (d) => {
