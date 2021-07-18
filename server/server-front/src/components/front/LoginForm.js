@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import Button from "../../lib/Button";
 
-export default function CredentialsForm({login, defaultValues}) {
+export default function LoginForm({login, defaultValues}) {
     const [values, setValues] = useState(
         defaultValues || {
             clientID: "",
@@ -22,11 +22,12 @@ export default function CredentialsForm({login, defaultValues}) {
 
     return (
         <div>
-            <input value={values.username} name="username" onChange={handleChange}/>
+            <input value={values.username} name="username" placeholder="Username" onChange={handleChange}/>
             <input
                 value={values.password}
                 type="password"
                 name="password"
+                placeholder="Password"
                 onChange={handleChange}
             />
             <Button title="Login" onClick={handleLogin}/>

@@ -40,7 +40,6 @@ export default function MerchantProvider({children}) {
             if (res.statusCode === 201) {
                 setRegisterSuccess(true);
             } else {
-                console.log("test");
                 setError("An error has occured");
             }
         });

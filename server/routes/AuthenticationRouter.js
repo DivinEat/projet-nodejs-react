@@ -5,7 +5,8 @@ const router = Router();
 
 router.post("/login", (req, res) => {
     const {username, password} = req.body;
-    
+
+    // get User
     if (username === "test2@test.fr" && password === "test") {
         createJWT({username}).then((token) => res.json({token}));
     } else {

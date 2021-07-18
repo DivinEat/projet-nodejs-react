@@ -1,9 +1,9 @@
-import CredentialsForm from "./CredentialsForm";
+import LoginForm from "./LoginForm";
 import {CredentialsContext} from "../../contexts/CredentialsContext";
 import {useContext} from "react";
 import Button from "../../lib/Button";
 
-export default function Merchant() {
+export default function Login() {
     const {token, profil, login, logout} = useContext(CredentialsContext);
     return (
         <>
@@ -14,7 +14,7 @@ export default function Merchant() {
                 </>
             )}
             {(token == null || token === false) && (
-                <CredentialsForm
+                <LoginForm
                     login={values => login(values.username, values.password)}
                 />
             )}
