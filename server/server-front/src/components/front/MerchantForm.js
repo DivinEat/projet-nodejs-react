@@ -28,6 +28,14 @@ export default function MerchantForm({onSubmit, defaultValues, registerSuccess, 
 
     return (
         <>
+            {registerSuccess === true && (
+                <div>Success</div>
+            )}
+
+            {error && registerSuccess === false && (
+                <div>{error}</div>
+            )}
+
             {registerSuccess === false && (
                 <div>
                     <p>Merchant</p>
