@@ -93,9 +93,6 @@ Content-Type: application/json
 GET http://localhost:3000/merchants/1
 
 ###
-GET http://localhost:3000/merchants
-
-###
 GET http://localhost:3002/credentials
 
 ###
@@ -147,6 +144,19 @@ POST http://localhost:3001/login
 Content-Type: application/json
 
 {
+  "clientId": "test2@test.fr",
+  "clientSecret": "test"
+}
+
+###
+POST http://localhost:3001/login
+Content-Type: application/json
+
+{
   "username": "test2@test.fr",
   "password": "test"
 }
+
+###
+GET http://localhost:3001/merchants
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6InRlc3QyQHRlc3QuZnIiLCJpYXQiOjE2MjY3MjU4ODQsImV4cCI6MTYyOTMxNzg4NH0.dYja09mcYgqOaBL33VKuF-NuTml8LyspP45dUAarOBj9WYY9Lz8Yf9ch9CG-33PZaENm0rj1u_nH6VApAgnwRQ

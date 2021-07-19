@@ -1,61 +1,62 @@
 version: "3.4"
 services:
-    mongo:
-        image: mongo
-        ports:
-            - 27017:27017
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: password
-        volumes:
-            - ./SampleCollections:/usr/local/sampleCollections
-        working_dir: /usr/local/sampleCollections
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./SampleCollections:/usr/local/sampleCollections
+    working_dir: /usr/local/sampleCollections
 
-    db:
-        image: postgres:alpine
-        ports:
-            - 5432:5432
-        environment:
-            POSTGRES_DB: app
-            POSTGRES_USER: root
-            POSTGRES_PASSWORD: password
-        volumes:
-            - db-data:/var/lib/postgresql/data:rw
+  db:
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
 
-    server:
-        image: node:alpine3.10
-        ports:
-                - 3001:3000
-        environment:
-            PORT: 3000
-            MONGO_URL: "mongodb://root:password@mongo:27017/app"
-            DATABASE_URL: "postgres://root:password@db:5432/app"
-        volumes:
-            - ./server:/home/node/app
-        working_dir: /home/node/app
-        command: sh -c "npm start --no-update-notifier"
+  server:
+    image: node:alpine3.10
+    ports:
+      - 3001:3000
+    environment:
+      JWT_SECRET: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.5mhBHqs5_DTLdINd9p5m7ZJ6XD0Xc55kIaCRY5r6HRA"
+      PORT: 3000
+      MONGO_URL: "mongodb://root:password@mongo:27017/app"
+      DATABASE_URL: "postgres://root:password@db:5432/app"
+    volumes:
+      - ./server:/home/node/app
+    working_dir: /home/node/app
+    command: sh -c "npm start --no-update-notifier"
 
-    client:
-        image: node:alpine3.10
-        ports:
-            - 3000:3000
-        environment: {}
-        volumes:
-            - ./client:/home/node/app
-        working_dir: /home/node/app
-        command: sh -c "yarn install --no-update-notifier; yarn start --no-update-notifier"
+  client:
+    image: node:alpine3.10
+    ports:
+      - 3000:3000
+    environment: { }
+    volumes:
+      - ./client:/home/node/app
+    working_dir: /home/node/app
+    command: sh -c "yarn install --no-update-notifier; yarn start --no-update-notifier"
 
-    psp:
-        image: node:alpine3.10
-        ports:
-            - 4000:4000
-        environment:
-            PORT: 4000
-            API_URL: http://server/
-        volumes:
-            - ./psp:/home/node/app
-        working_dir: /home/node/app
-        command: sh -c "npm install --no-update-notifier; npm start --no-update-notifier"
+  psp:
+    image: node:alpine3.10
+    ports:
+      - 4000:4000
+    environment:
+      PORT: 4000
+      API_URL: http://server/
+    volumes:
+      - ./psp:/home/node/app
+    working_dir: /home/node/app
+    command: sh -c "npm install --no-update-notifier; npm start --no-update-notifier"
 
 volumes:
-    db-data: {}
+  db-data: { }

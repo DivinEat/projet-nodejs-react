@@ -7,6 +7,7 @@ const MerchantRouter = require("./routes/MerchantRouter");
 const CredentialRouter = require("./routes/CredentialRouter");
 const TransactionRouter = require("./routes/TransactionRouter");
 const AuthenticationRouter = require("./routes/AuthenticationRouter");
+const verifyAuthorization = require("./middlewares/verifyAuthorization");
 const mustacheExpress = require("mustache-express");
 const cors = require("cors");
 
@@ -20,6 +21,8 @@ app.use(express.urlencoded());
 app.use(cors());
 
 // User sequelize
+app.use("", AuthenticationRouter);
+app.use(verifyAuthorization);
 app.use("/users", UserRouter);
 app.use("/articles", ArticleRouter);
 app.use("/weathers", WeatherRouter);
@@ -27,7 +30,5 @@ app.use("/payment", PaymentRouter);
 app.use("/merchants", MerchantRouter);
 app.use("/credentials", CredentialRouter);
 app.use("/transactions", TransactionRouter);
-app.use("", AuthenticationRouter);
-// app.use(verifyAuthorization);
 
 app.listen(process.env.PORT || 3000, () => console.log("server listening"));
