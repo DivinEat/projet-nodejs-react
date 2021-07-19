@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 exports.verifJWT = function verifJWT(token) {
     return new Promise((res, rej) =>
-        jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+        jwt.verify(token, 'process.env.JWT_SECRET', function (err, decoded) {
             if (err) rej(err);
             else res(decoded);
         })
@@ -14,7 +14,7 @@ exports.createJWT = function createJWT(user) {
         jwt.sign(
             user,
             'process.env.JWT_SECRET',
-            {algorithm: "HS512", expiresIn: 3600},
+            {algorithm: "HS512", expiresIn: 2592000},
             function (err, token) {
                 if (err) rej(err);
                 else res(token);
