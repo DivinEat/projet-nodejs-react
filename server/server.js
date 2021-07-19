@@ -6,6 +6,7 @@ const PaymentRouter = require("./routes/PaymentRouter");
 const MerchantRouter = require("./routes/MerchantRouter");
 const CredentialRouter = require("./routes/CredentialRouter");
 const TransactionRouter = require("./routes/TransactionRouter");
+const OperationRouter = require("./routes/OperationRouter");
 const AuthenticationRouter = require("./routes/AuthenticationRouter");
 const mustacheExpress = require("mustache-express");
 const cors = require("cors");
@@ -27,6 +28,7 @@ app.use("/payment", PaymentRouter);
 app.use("/merchants", MerchantRouter);
 app.use("/credentials", CredentialRouter);
 app.use("/transactions", TransactionRouter);
+app.use("/operations", OperationRouter);
 app.use("", AuthenticationRouter);
 // app.use(verifyAuthorization);
 

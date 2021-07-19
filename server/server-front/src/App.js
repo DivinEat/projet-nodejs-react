@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import BackMerchant from "./components/back/Merchant";
 import Merchant from "./components/front/Merchant";
+import Transaction from "./components/front/Transaction";
 import Login from "./components/front/Login";
 import MerchantProvider from "./contexts/MerchantContext";
 import CredentialsProvider from "./contexts/CredentialsContext";
@@ -22,6 +23,10 @@ function App() {
                                 <Merchant/>
                             </Route>
                         </MerchantProvider>
+
+                        <Route path="/transactions" exact>
+                            <Transaction/>
+                        </Route>
 
                         <Route path="/login" exact>
                             <Login/>
