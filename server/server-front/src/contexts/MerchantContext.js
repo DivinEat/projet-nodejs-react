@@ -39,10 +39,13 @@ export default function MerchantProvider({children}) {
             res.setEncoding("utf8");
             if (res.statusCode === 201) {
                 setRegisterSuccess(true);
+            } else {
+                setError("An error has occured");
             }
         });
 
         request.on("error", (e) => {
+            console.log("test");
             setError(`problem with request: ${e.message}`);
         });
 

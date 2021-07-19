@@ -50,6 +50,8 @@ export default function Merchant() {
 
     return (
         <>
+            <h1>Merchants</h1>
+            
             <ul>
                 {merchants.map((merchant) => (
                     <li key={merchant.id}>
