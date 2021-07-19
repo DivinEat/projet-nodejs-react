@@ -3,7 +3,7 @@ import SearchBar from './SearchBar';
 import Modal from "./lib/Modal";
 import Button from "./lib/Button";
 
-const Transaction = (props) => {
+const Transaction = ({merchant}) => {
     const [input, setInput] = useState('');
     const [transactionsDefault, setTransactionsDefault] = useState([]);
     const [transactions, setTransactions] = useState([]);
