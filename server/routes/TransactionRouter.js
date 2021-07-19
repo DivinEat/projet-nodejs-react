@@ -4,6 +4,9 @@ const {prettifyValidationErrors} = require("../lib/utils");
 const http = require("http");
 const TransactionHistory = require("../models/sequelize/TransactionHistory");
 const Operation = require("../models/sequelize/Operation");
+const TransactionMongo = require("../models/mongo/Transaction");
+const OperationMongo = require("../models/mongo/Operation");
+const TransactionHistoryMongo = require("../models/mongo/TransactionHistory");
 
 const router = Router();
 
@@ -34,6 +37,10 @@ router.post("/", (req, res) => {
                 type: 'CAPTURE',
                 transactionId: transaction.dataValues.id
             }).save();
+
+            console.log('save');
+            saveToMongo(transaction.dataValues);
+            console.log('ok');
 
             res.status(201).json({
                 transaction: transaction.dataValues,
@@ -163,5 +170,30 @@ async function confirmPayment(data) {
     req.write(data);
     req.end();
 }
+
+const saveToMongo = (transaction) => {
+    new TransactionMongo({
+        consumer: transaction.consumer,
+        shippingAddress: transaction.shippingAddress,
+        billingAddress: transaction.billingAddress,
+        cart: transaction.cart,
+        totalPrice: transaction.totalPrice,
+        currency: transaction.currency,
+        merchantId: transaction.merchantId,
+        status: transaction.status
+    }).save();
+
+    new TransactionHistoryMongo({
+        initialStatus: null,
+        newStatus: transaction.status,
+        transactionId: transaction.transactionId,
+    }).save();
+
+    new OperationMongo({
+        amount: transaction.amount,
+        type: 'CAPTURE',
+        transactionId: transaction.id,
+    }).save();
+};
 
 module.exports = router;

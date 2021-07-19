@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import BackMerchant from "./components/back/Merchant";
 import Merchant from "./components/front/Merchant";
