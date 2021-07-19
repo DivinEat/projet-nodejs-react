@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import BackMerchant from "./components/back/Merchant";
 import Merchant from "./components/front/Merchant";
-import Transaction from "./components/front/Transaction";
+import Transaction from "./components/Transaction";
 import Login from "./components/front/Login";
 import MerchantProvider from "./contexts/MerchantContext";
 import CredentialsProvider from "./contexts/CredentialsContext";
@@ -18,6 +18,10 @@ function App() {
                             <BackMerchant/>
                         </Route>
 
+                        <Route path="/admin/transactions" exact>
+                            <Transaction/>
+                        </Route>
+
                         <MerchantProvider>
                             <Route path="/merchant" exact>
                                 <Merchant/>
@@ -25,7 +29,7 @@ function App() {
                         </MerchantProvider>
 
                         <Route path="/transactions" exact>
-                            <Transaction/>
+                            <Transaction merchant={true}/>
                         </Route>
 
                         <Route path="/login" exact>

@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from "react";
-import Modal from "../lib/Modal";
-import Button from "../lib/Button";
+import Modal from "./lib/Modal";
+import Button from "./lib/Button";
 
-export default function Transaction() {
+export default function Transaction({merchant}) {
     const [transactions, setTransactions] = useState([]);
     const [operations, setOperations] = useState([]);
     const [modal, setModal] = useState(false);
 
     useEffect(() => {
+        // Soumettre le merchant si {merchant} == true
+        
         fetch("http://localhost:3001/transactions")
             .then(res => {
                 return res.json();
