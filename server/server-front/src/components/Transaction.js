@@ -9,7 +9,7 @@ export default function Transaction({merchant}) {
 
     useEffect(() => {
         // Soumettre le merchant si {merchant} == true
-        
+
         fetch("http://localhost:3001/transactions")
             .then(res => {
                 return res.json();
@@ -44,6 +44,8 @@ export default function Transaction({merchant}) {
 
     return (
         <>
+            <h1>Transactions</h1>
+            
             <ul>
                 {transactions.map((transaction) => (
                     <li key={transaction.id}>
