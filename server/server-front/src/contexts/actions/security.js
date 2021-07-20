@@ -1,5 +1,5 @@
 export function login(user, pass) {
-    return fetch('http://localhost:3001/login', {
+    return fetch('/login', {
         method: 'POST',
         headers: {
             'content-type': 'application/json',

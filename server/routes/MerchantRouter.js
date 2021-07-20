@@ -2,14 +2,10 @@ const User = require("../models/sequelize/User");
 const {Router} = require("express");
 const {Merchant} = require("../models/sequelize");
 const {prettifyValidationErrors} = require("../lib/utils");
+const verifyAuthorization = require("../middlewares/verifyAuthorization");
+
 
 const router = Router();
-
-router.get("/", (request, response) => {
-    Merchant.findAll({where: request.query})
-        .then((data) => response.json(data))
-        .catch((e) => response.sendStatus(500));
-});
 
 router.post("/", (req, res) => {
     const data = req.body;
@@ -43,6 +39,14 @@ router.post("/", (req, res) => {
                 res.sendStatus(500);
             }
         });
+});
+
+router.use(verifyAuthorization);
+
+router.get("/", (request, response) => {
+    Merchant.findAll({where: request.query})
+        .then((data) => response.json(data))
+        .catch((e) => response.sendStatus(500));
 });
 
 router.get("/:id", (request, response) => {

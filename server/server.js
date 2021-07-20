@@ -24,12 +24,12 @@ app.use(cors());
 
 // User sequelize
 app.use("", AuthenticationRouter);
+app.use("/merchants", MerchantRouter);
 app.use(verifyAuthorization);
 app.use("/users", UserRouter);
 app.use("/articles", ArticleRouter);
 app.use("/weathers", WeatherRouter);
 app.use("/payment", PaymentRouter);
-app.use("/merchants", MerchantRouter);
 app.use("/credentials", CredentialRouter);
 app.use("/transactions", TransactionRouter);
 app.use("/operations", OperationRouter);

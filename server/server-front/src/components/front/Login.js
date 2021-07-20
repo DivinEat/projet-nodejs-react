@@ -4,12 +4,11 @@ import {useContext} from "react";
 import Button from "../../lib/Button";
 
 export default function Login() {
-    const {token, profil, login, logout} = useContext(CredentialsContext);
+    const {token, login, logout} = useContext(CredentialsContext);
     return (
         <>
             {token && (
                 <>
-                    <div>{JSON.stringify(profil)}</div>
                     <Button title="Logout" onClick={logout}/>
                 </>
             )}

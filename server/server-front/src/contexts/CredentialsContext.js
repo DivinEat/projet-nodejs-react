@@ -6,14 +6,12 @@ export const CredentialsContext = createContext();
 
 export default function CredentialsProvider({children}) {
     const [token, setToken] = useState();
-    const [profil, setProfil] = useState();
 
     useEffect(() => {
         const token = localStorage.getItem('jwt_token');
 
         if (localStorage.hasOwnProperty('jwt_token')) {
             setToken(token);
-            setProfil(token && jwtDecode(token));
         }
     }, []);
 
@@ -22,7 +20,6 @@ export default function CredentialsProvider({children}) {
             if (token) {
                 localStorage.setItem('jwt_token', token);
                 setToken(token);
-                setProfil(jwtDecode(token));
             } else {
                 setToken(false);
             }
@@ -35,7 +32,7 @@ export default function CredentialsProvider({children}) {
     };
 
     return (
-        <CredentialsContext.Provider value={{token, profil, login, logout}}>
+        <CredentialsContext.Provider value={{token, login, logout}}>
             {children}
         </CredentialsContext.Provider>
     );

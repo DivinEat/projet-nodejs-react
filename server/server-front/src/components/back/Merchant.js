@@ -6,7 +6,11 @@ export default function Merchant() {
     const [merchants, setMerchants] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:3001/merchants")
+        fetch("http://localhost:3001/merchants", { method: 'GET',
+            headers: new Headers({
+                    "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`,
+                })
+            })
             .then(res => {
                 return res.json();
             })
