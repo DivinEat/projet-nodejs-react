@@ -7,8 +7,9 @@ function Header() {
             <h1>Website</h1>
 
             <div>
-                <Link to="/admin/transactions">Transactions</Link>
                 <Link to="/">Home</Link>
+                <Link to="/admin/transactions">Transactions</Link>
+                <Link to="/admin/credential">Credential</Link>
             </div>
         </nav>
     );

@@ -4,6 +4,8 @@ import Page from "./components/Page";
 import {useState, useEffect} from "react";
 import HeaderFront from "./components/front/Header";
 import HeaderBack from "./components/back/Header";
+import Transaction from "./components/back/Transaction";
+import Credential from "./components/back/Credential";
 
 function App() {
     const [theme, setTheme] = useState("dark");
@@ -17,6 +19,11 @@ function App() {
                     </Route>
                     <Route path="/admin/transactions" exact>
                         <HeaderBack/>
+                        <Transaction/>
+                    </Route>
+                    <Route path="/admin/credential" exact>
+                        <HeaderBack/>
+                        <Credential/>
                     </Route>
 
                     <Route path="/" exact>
