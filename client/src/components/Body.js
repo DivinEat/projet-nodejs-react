@@ -1,5 +1,5 @@
 import React from "react";
-import List from "./Cart/List";
+import List from "./front/cart/List";
 
 function Body({theme}) {
     return (

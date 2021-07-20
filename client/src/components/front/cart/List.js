@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import Button from "../lib/Button";
-import Modal from "../lib/Modal";
+import Button from "../../lib/Button";
+import Modal from "../../lib/Modal";
 import Form from "./Form";
 
 const defaultList = [];

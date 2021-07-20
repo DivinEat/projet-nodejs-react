@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Button from "../lib/Button";
+import Button from "../../lib/Button";
 
 export default function Form({onSubmit, defaultValues}) {
     const [values, setValues] = useState(
