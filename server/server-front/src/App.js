@@ -6,6 +6,8 @@ import Login from "./components/front/Login";
 import MerchantProvider from "./contexts/MerchantContext";
 import CredentialsProvider from "./contexts/CredentialsContext";
 import {BrowserRouter, Route} from "react-router-dom";
+import HeaderFront from "./components/front/Header";
+import HeaderBack from "./components/back/Header";
 
 function App() {
     return (
@@ -13,25 +15,33 @@ function App() {
             <header className="App-header">
                 <CredentialsProvider>
                     <BrowserRouter>
+                        <Route path="/admin" exact>
+                            <HeaderBack/>
+                        </Route>
                         <Route path="/admin/merchants" exact>
+                            <HeaderBack/>
                             <BackMerchant/>
                         </Route>
-
                         <Route path="/admin/transactions" exact>
+                            <HeaderBack/>
                             <Transaction/>
                         </Route>
 
+                        <Route path="/" exact>
+                            <HeaderFront/>
+                        </Route>
                         <MerchantProvider>
-                            <Route path="/merchant" exact>
+                            <Route path="/register" exact>
+                                <HeaderFront/>
                                 <Merchant/>
                             </Route>
                         </MerchantProvider>
-
                         <Route path="/transactions" exact>
+                            <HeaderFront/>
                             <Transaction merchant={true}/>
                         </Route>
-
                         <Route path="/login" exact>
+                            <HeaderFront/>
                             <Login/>
                         </Route>
                     </BrowserRouter>
