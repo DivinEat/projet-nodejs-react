@@ -1,16 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Button from "../../lib/Button";
-
+import {fetch_api} from "../../contexts/actions/security";
 
 export default function Merchant() {
     const [merchants, setMerchants] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:3001/merchants", { method: 'GET',
-            headers: new Headers({
-                    "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`,
-                })
-            })
+        fetch_api(`merchants`, 'GET', null)
             .then(res => {
                 return res.json();
             })
@@ -26,16 +22,12 @@ export default function Merchant() {
     }, []);
 
     const updateMerchantStatus = (merchant) => {
-        fetch(`http://localhost:3001/merchants/${merchant.id}`, {
-            method: "PUT",
-            headers: {
-                "Content-type": "application/json",
-                // Authorization: "BASIC " + localStorage.getItem("credential"),
-            },
-            body: JSON.stringify({
+        fetch_api(`merchants/${merchant.id}`,
+            'PUT',
+            {
                 status: merchant.status ? false : true
-            }),
-        })
+            }
+        )
             .then((res) => {
                 if (res.status !== 200) {
                     console.log("Error");

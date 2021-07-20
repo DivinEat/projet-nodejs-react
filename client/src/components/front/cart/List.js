@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import Button from "../../lib/Button";
 import Modal from "../../lib/Modal";
 import Form from "./Form";
+import {fetch_api} from "../../lib/security";
 
 const defaultList = [];
 
@@ -41,13 +42,8 @@ export default function List({theme}) {
         0
     );
     const generateTransaction = () => {
-        fetch("http://localhost:3001/transactions", {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json",
-                Authorization: "BASIC " + localStorage.getItem("credential"),
-            },
-            body: JSON.stringify({
+        fetch_api("transactions", "POST",
+            {
                 transaction: {
                     currency: "EUR",
                     totalPrice: totalPrice,
@@ -56,10 +52,10 @@ export default function List({theme}) {
                     consumer: `${consumerValues.consumerFirstname} ${consumerValues.consumerLastname}`,
                     cart: JSON.stringify(list)
                 }
-            }),
-        })
-            .then((res) => res.json())
-            .then((data) => console.log(data));
+            }, false
+        )
+        .then((res) => res.json())
+        .then((data) => console.log(data));
     };
 
     const consumerUpdate = (event) => {

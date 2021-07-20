@@ -15,13 +15,11 @@ module.exports = function verifyAuthorization(req, res, next) {
   }
     verifJWT(token)
         .then((user) => {
-            console.log(user);
             req.user = user;
             req.merchant = user.merchant;
             next();
         })
         .catch(() => {
-            console.log("here");
             res.sendStatus(401);
             res.end();
         });

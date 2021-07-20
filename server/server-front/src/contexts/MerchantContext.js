@@ -52,26 +52,6 @@ export default function MerchantProvider({children}) {
         // Write data to request body
         request.write(data);
         request.end();
-
-
-        // fetch('http://localhost:3001/merchants', {
-        //     method: 'POST',
-        //     headers: {
-        //         'content-type': 'application/json',
-        //         'guard': 'request-no-cors',
-        //     },
-        //     body: JSON.stringify(data)
-        // })
-        //     .then(res => {
-        //         if (res.status === 201) {
-        //             setRegisterSuccess(true);
-        //             return;
-        //         }
-        //         setError("y a une erreur");
-        //     })
-        //     .catch(function (e) {
-        //         console.error(`problem with request: ${e.message}`);
-        //     });
     };
 
     return (

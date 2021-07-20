@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import SearchBar from './SearchBar';
 import Modal from "../lib/Modal";
 import Button from "../lib/Button";
+import {fetch_api} from "../lib/security";
 
 const Transaction = () => {
     const [input, setInput] = useState('');
@@ -13,7 +14,7 @@ const Transaction = () => {
     const [modalHistory, setModalHistory] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:3001/transactions")
+        fetch_api("transactions", "GET", null, false)
             .then(res => {
                 return res.json();
             })
@@ -26,17 +27,17 @@ const Transaction = () => {
     }, []);
 
     const getOperations = (transactionId) => {
-        fetch('http://localhost:3001/operations?' + new URLSearchParams({
-            transactionId: transactionId,
-        }))
-            .then(res => {
-                return res.json();
-            })
+        fetch_api(`operations?${new URLSearchParams({transactionId: transactionId})}`,
+            'GET',
+            null
+        ).then(res => {
+            return res.json();
+        })
             .then(
                 (result) => {
                     setOperations(result);
                 },
-            )
+            );
 
         setModalOperation(true);
     }
@@ -47,9 +48,10 @@ const Transaction = () => {
     }
 
     const getHistory = (transactionId) => {
-        fetch('http://localhost:3001/transaction-histories?' + new URLSearchParams({
-            transactionId: transactionId,
-        }))
+        fetch_api(`transaction-histories?${new URLSearchParams({transactionId: transactionId})}`,
+            'GET',
+            null
+        )
             .then(res => {
                 return res.json();
             })
@@ -57,7 +59,7 @@ const Transaction = () => {
                 (result) => {
                     setHistories(result);
                 },
-            )
+            );
 
         setModalHistory(true);
     }

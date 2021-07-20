@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 function Header() {
     return (
         <nav>
-            <h1>Website</h1>
+            <h1>ServerFront</h1>
 
             <div>
                 <Link to="/transactions">Transactions</Link>

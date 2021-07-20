@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import SearchBar from './SearchBar';
 import Modal from "./lib/Modal";
 import Button from "./lib/Button";
+import {fetch_api} from "../contexts/actions/security";
 
 const Transaction = ({merchant}) => {
     const [input, setInput] = useState('');
@@ -15,30 +16,34 @@ const Transaction = ({merchant}) => {
     useEffect(() => {
         // Soumettre le merchant si {merchant} == true
 
-        fetch("http://localhost:3001/transactions")
-            .then(res => {
-                return res.json();
-            })
-            .then(
-                (result) => {
-                    setTransactions(result)
-                    setTransactionsDefault(result)
-                },
-            )
+        fetch_api('transactions',
+            'GET',
+            null
+        ).then(res => {
+            return res.json();
+        })
+        .then(
+            (result) => {
+                setTransactions(result)
+                setTransactionsDefault(result)
+            },
+        );
+
+
     }, []);
 
     const getOperations = (transactionId) => {
-        fetch('http://localhost:3001/operations?' + new URLSearchParams({
-            transactionId: transactionId,
-        }))
-            .then(res => {
-                return res.json();
-            })
-            .then(
-                (result) => {
-                    setOperations(result);
-                },
-            )
+        fetch_api(`operations?${new URLSearchParams({transactionId: transactionId})}`,
+            'GET',
+            null
+            ).then(res => {
+            return res.json();
+        })
+        .then(
+            (result) => {
+                setOperations(result);
+            },
+        );
 
         setModalOperation(true);
     }
@@ -49,9 +54,10 @@ const Transaction = ({merchant}) => {
     }
 
     const getHistory = (transactionId) => {
-        fetch('http://localhost:3001/transaction-histories?' + new URLSearchParams({
-            transactionId: transactionId,
-        }))
+        fetch_api(`transaction-histories?${new URLSearchParams({transactionId: transactionId})}`,
+            'GET',
+            null
+        )
             .then(res => {
                 return res.json();
             })
@@ -59,7 +65,7 @@ const Transaction = ({merchant}) => {
                 (result) => {
                     setHistories(result);
                 },
-            )
+            );
 
         setModalHistory(true);
     }

@@ -1,6 +1,7 @@
 import React, {createContext, useState, useEffect} from 'react';
 import {login as flogin} from './actions/security';
 import jwtDecode from 'jwt-decode';
+import {set} from "mongoose";
 
 export const CredentialsContext = createContext();
 
@@ -17,12 +18,7 @@ export default function CredentialsProvider({children}) {
 
     const login = (username, password) => {
         flogin(username, password).then(token => {
-            if (token) {
-                localStorage.setItem('jwt_token', token);
-                setToken(token);
-            } else {
-                setToken(false);
-            }
+            setToken(token);
         });
     };
 
