@@ -44,7 +44,7 @@ router.post("/", (req, res) => {
 
             res.status(201).json({
                 transaction: transaction.dataValues,
-                payment_url: `http://localhost:3001/transactions/client-confirm-payment/${transaction.dataValues.id}`,
+                payment_url: `http://localhost:3002/transactions/client-confirm-payment/${transaction.dataValues.id}`,
             });
         })
         .catch((e) => {

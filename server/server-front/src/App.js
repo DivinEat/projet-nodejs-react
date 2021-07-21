@@ -9,6 +9,7 @@ import {BrowserRouter, Route} from "react-router-dom";
 import HeaderFront from "./components/front/Header";
 import HeaderBack from "./components/back/Header";
 import Home from "./components/front/Home";
+import PaymentForm from "./components/front/PaymentForm";
 
 function App() {
     return (
@@ -41,6 +42,9 @@ function App() {
                         <Route path="/transactions" exact>
                             <HeaderFront/>
                             <Transaction merchant={true}/>
+                        </Route>
+                        <Route path="/transactions/client-confirm-payment/:id" exact>
+                            <PaymentForm/>
                         </Route>
                         <Route path="/login" exact>
                             <HeaderFront/>

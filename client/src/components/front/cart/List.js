@@ -3,6 +3,7 @@ import Button from "../../lib/Button";
 import Modal from "../../lib/Modal";
 import Form from "./Form";
 import {fetch_api} from "../../lib/security";
+import {Redirect, useHistory} from "react-router-dom";
 
 const defaultList = [];
 
@@ -44,6 +45,8 @@ export default function List({theme}) {
         0
     );
     const generateTransaction = () => {
+        // TODO merchantId
+
         fetch_api("transactions", "POST",
             {
                 transaction: {
@@ -56,8 +59,12 @@ export default function List({theme}) {
                 }
             }, false
         )
-        .then((res) => res.json())
-        .then((data) => console.log(data));
+            .then((res) => res.json())
+            .then((data) => {
+                    window.location.href = data.payment_url;
+                }
+            )
+        ;
     };
 
     const consumerUpdate = (event) => {
