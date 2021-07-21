@@ -7,8 +7,6 @@ function Home() {
 
     useEffect(() => {
         // TODO merchantId
-        const token = localStorage.getItem('jwt_token');
-
         fetch_api('credentials',
             'GET',
             null
