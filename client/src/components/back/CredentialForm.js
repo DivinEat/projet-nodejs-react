@@ -2,21 +2,21 @@ import React, {useState} from "react";
 import Button from "../lib/Button";
 
 export default function CredentialForm({onSubmit}) {
-    const [values, setValues] = useState(
-        {
+
+    const [values, seValues] = useState({
             clientId: "",
             clientSecret: "",
         }
     );
 
     const handleChange = (event) => {
-        setValues({
+        seValues({
             ...values,
             [event.target.name]: event.target.value,
         });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (values) => {
         onSubmit(values);
     };
 
@@ -28,7 +28,7 @@ export default function CredentialForm({onSubmit}) {
                 <input value={values.clientSecret} placeholder="clientSecret" name="clientSecret"
                        onChange={handleChange}/>
 
-                <Button title="Save" onClick={handleSubmit}/>
+                <Button title="Save" onClick={() => handleSubmit(values)}/>
             </div>
         </>)
         ;

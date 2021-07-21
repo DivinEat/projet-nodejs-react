@@ -25,9 +25,8 @@ export function fetch_api(input, method, body, tryLogin) {
 }
 
 export function login() {
-    // TODO: get en base (dans un fichier)
-    const clientId = 'test2@test.fr';
-    const clientSecret = 'test';
+    const clientId = localStorage.getItem('clientId');
+    const clientSecret = localStorage.getItem('clientSecret');
 
     return fetch('http://localhost:3001/login', {
         method: 'POST',

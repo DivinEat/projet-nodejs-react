@@ -1,7 +1,7 @@
 import "./App.css";
 import {BrowserRouter, Route} from "react-router-dom";
 import Page from "./components/Page";
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import HeaderFront from "./components/front/Header";
 import HeaderBack from "./components/back/Header";
 import Transaction from "./components/back/Transaction";

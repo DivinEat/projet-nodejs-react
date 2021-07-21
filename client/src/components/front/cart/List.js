@@ -25,7 +25,9 @@ export default function List({theme}) {
         }
     );
 
-    useEffect(() => setList(defaultList), []);
+    useEffect(() => {
+        return setList(defaultList);
+    }, []);
 
     const deleteItem = (item) => setList(list.filter((it) => it !== item));
     const editItem = (item) => setModal(item);
