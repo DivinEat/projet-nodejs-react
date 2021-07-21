@@ -8,6 +8,7 @@ import CredentialsProvider from "./contexts/CredentialsContext";
 import {BrowserRouter, Route} from "react-router-dom";
 import HeaderFront from "./components/front/Header";
 import HeaderBack from "./components/back/Header";
+import Home from "./components/front/Home";
 
 function App() {
     return (
@@ -29,6 +30,7 @@ function App() {
 
                         <Route path="/" exact>
                             <HeaderFront/>
+                            <Home/>
                         </Route>
                         <MerchantProvider>
                             <Route path="/register" exact>

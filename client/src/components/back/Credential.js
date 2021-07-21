@@ -32,10 +32,10 @@ function Credential() {
             {clientId && clientSecret && (
                 <>
                     <div>
-                        ClientId {clientId}
+                        ClientId : {clientId}
                     </div>
                     <div>
-                        ClientSecret {clientSecret}
+                        ClientSecret : {clientSecret}
                     </div>
                 </>
             )}

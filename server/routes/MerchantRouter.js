@@ -17,8 +17,12 @@ router.post("/", (req, res) => {
             user.MerchantId = merchant.id;
 
             User.create(user)
-                .then(() => {
-                    res.status(201).json(merchant);
+                .then((user) => {
+                    const email = user.dataValues.username;
+                    sendMail(email, "Welcome to ServerAPI",
+                        'Your account is awaiting validation by an Admin.');
+
+                    return res.status(201).json(merchant);
                 })
                 .catch((e) => {
                     if (e.name === "SequelizeValidationError") {
@@ -76,7 +80,7 @@ router.put("/:id", (req, res) => {
                         const credentials = generateCredentials(id);
 
                         new Credential(credentials).save().then((credential) => {
-                            sendMail(email, "Welcome to ServerAPI", `clientId : ${credential.dataValues.clientId}\nclientSecret : ${credential.dataValues.clientSecret}`);
+                            sendMail(email, "Account validated", `clientId : ${credential.dataValues.clientId}\nclientSecret : ${credential.dataValues.clientSecret}`);
                         });
                     });
                 }
