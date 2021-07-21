@@ -1,9 +1,9 @@
 const User = require("../models/sequelize/User");
 const {Router} = require("express");
-const {Merchant} = require("../models/sequelize");
-const {prettifyValidationErrors} = require("../lib/utils");
+const {Merchant, Credential} = require("../models/sequelize");
+const {prettifyValidationErrors, generateCredentials} = require("../lib/utils");
+const {sendMail} = require("../lib/mail");
 const verifyAuthorization = require("../middlewares/verifyAuthorization");
-
 
 const router = Router();
 
@@ -12,26 +12,10 @@ router.post("/", (req, res) => {
     const merchant = data.merchant;
     const user = data.user;
 
-    const nodemailer = require('nodemailer');
-
-    const transporter = nodemailer.createTransport({
-        host: "mailhog",
-        port: 1025
-    });
-
-    const messageStatus = transporter.sendMail({
-        from: "My Company <company@companydomain.org>",
-        to: 'lud.collignon@gmail.com',
-        subject: "Hi Mailhog!",
-        text: "This is the email content",
-    });
-
-    console.log("messageStatus =>");
-    console.log(messageStatus);
-
     Merchant.create(merchant)
         .then((merchant) => {
             user.MerchantId = merchant.id;
+
             User.create(user)
                 .then(() => {
                     res.status(201).json(merchant);
@@ -76,13 +60,29 @@ router.get("/:id", (request, response) => {
 
 router.put("/:id", (req, res) => {
     const {id} = req.params;
+
     Merchant.update(req.body, {
         where: {id},
         returning: true,
         individualHooks: true,
     })
-        .then(([, [data]]) =>
-            data !== undefined ? res.status(200).json(data) : res.sendStatus(404)
+        .then(([, [data]]) => {
+                if (data.dataValues.status) {
+                    User.findOne({where: {MerchantId: id}}).then((user) => {
+                        const email = user.dataValues.username;
+
+                        Credential.destroy({where: {merchantId: id}});
+
+                        const credentials = generateCredentials(id);
+
+                        new Credential(credentials).save().then((credential) => {
+                            sendMail(email, "Welcome to ServerAPI", `clientId : ${credential.dataValues.clientId}\nclientSecret : ${credential.dataValues.clientSecret}`);
+                        });
+                    });
+                }
+
+                return data !== undefined ? res.status(200).json(data) : res.sendStatus(404)
+            }
         )
         .catch((e) => {
             if (e.name === "SequelizeValidationError") {
