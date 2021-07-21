@@ -11,7 +11,23 @@ router.post("/", (req, res) => {
     const data = req.body;
     const merchant = data.merchant;
     const user = data.user;
-    res.header("Access-Control-Allow-Origin", "*");
+
+    const nodemailer = require('nodemailer');
+
+    const transporter = nodemailer.createTransport({
+        host: "mailhog",
+        port: 1025
+    });
+
+    const messageStatus = transporter.sendMail({
+        from: "My Company <company@companydomain.org>",
+        to: 'lud.collignon@gmail.com',
+        subject: "Hi Mailhog!",
+        text: "This is the email content",
+    });
+
+    console.log("messageStatus =>");
+    console.log(messageStatus);
 
     Merchant.create(merchant)
         .then((merchant) => {

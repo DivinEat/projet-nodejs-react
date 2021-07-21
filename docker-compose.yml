@@ -58,5 +58,11 @@ services:
     working_dir: /home/node/app
     command: sh -c "npm install --no-update-notifier; npm start --no-update-notifier"
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+
 volumes:
   db-data: { }
