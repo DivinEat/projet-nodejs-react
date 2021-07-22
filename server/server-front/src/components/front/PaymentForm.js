@@ -20,14 +20,30 @@ export default function PaymentForm() {
     };
 
     const validateTransaction = () => {
-        console.log('validate');
+        fetch_api(`transactions/${getTranscationId()}`,
+            'PUT',
+            {
+                status: "WAIT"
+            }
+        ).then(res => res.json())
+            .then(
+                (result) => {
+                    const merchantId = result.merchantId;
+                    fetch_api(`merchants/${merchantId}`,
+                        'GET',
+                        null
+                    ).then(res => res.json())
+                        .then(
+                            (merchant) => {
+                                window.location.href = merchant.confirmUrl;
+                            },
+                        );
+                },
+            );
     };
 
     const cancelTransaction = () => {
-        const url = window.location.pathname;
-        const id = url.substring(url.lastIndexOf('/') + 1);
-
-        fetch_api(`transactions/${id}`,
+        fetch_api(`transactions/${getTranscationId()}`,
             'PUT',
             {
                 status: "CANC"
@@ -35,10 +51,24 @@ export default function PaymentForm() {
         ).then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result)
+                    const merchantId = result.merchantId;
+                    fetch_api(`merchants/${merchantId}`,
+                        'GET',
+                        null
+                    ).then(res => res.json())
+                        .then(
+                            (merchant) => {
+                                window.location.href = merchant.cancelUrl;
+                            },
+                        );
                 },
             );
     };
+
+    const getTranscationId = () => {
+        const url = window.location.pathname;
+        return url.substring(url.lastIndexOf('/') + 1);
+    }
 
     return (
         <>
@@ -53,8 +83,10 @@ export default function PaymentForm() {
                 <input value={values.securityCode} placeholder="Security Code" name="securityCode"
                        onChange={handleChange}/>
 
-                <Button title="Validate" onClick={() => validateTransaction}/>
-                <Button title="Cancel" onClick={cancelTransaction}/>
+                <div>
+                    <Button title="Validate" onClick={() => validateTransaction()}/>
+                    <Button title="Cancel" onClick={() => cancelTransaction()}/>
+                </div>
             </div>
         </>)
         ;

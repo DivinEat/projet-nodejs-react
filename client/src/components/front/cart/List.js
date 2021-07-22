@@ -46,6 +46,7 @@ export default function List({theme}) {
     );
     const generateTransaction = () => {
         // TODO merchantId
+        console.log('test');
 
         fetch_api("transactions", "POST",
             {
@@ -61,6 +62,7 @@ export default function List({theme}) {
         )
             .then((res) => res.json())
             .then((data) => {
+                    console.log(data);
                     window.location.href = data.payment_url;
                 }
             )

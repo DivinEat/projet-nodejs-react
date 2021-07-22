@@ -33,6 +33,14 @@ function App() {
                         <HeaderFront/>
                         <Page theme={theme} setTheme={setTheme}/>
                     </Route>
+                    <Route path="/confirmed-payment" exact>
+                        <HeaderFront/>
+                        <div>Payment confirmed</div>
+                    </Route>
+                    <Route path="/canceled-payment" exact>
+                        <HeaderFront/>
+                        <div>Payment canceled</div>
+                    </Route>
                 </BrowserRouter>
 
             </header>
