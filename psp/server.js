@@ -1,50 +1,20 @@
 const express = require("express");
-const http = require("http");
-const app = express();
+const fetch = require("node-fetch");
 
+const app = express();
 app.use(express.json());
 
 app.post("/", function (req, res) {
-    const postData = JSON.stringify(req.body);
     setTimeout(() => {
-        const options = {
-            hostname: process.env.API_URL,
-            port: 3000,
-            path: "/confirm-payment",
+        fetch('http://server:3000/transactions/confirm-payment', {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Content-Length": Buffer.byteLength(postData),
+                'content-type': 'application/json',
             },
-        };
-
-        const request = http.request(options, (res) => {
-            res.setEncoding("utf8");
-            res.on("data", (chunk) => {
-                console.log(`BODY: ${chunk}`);
-            });
-            res.on("end", () => {
-                console.log("No more data in response.");
-            });
+            body: JSON.stringify(req.body)
         });
-
-        request.on("error", (e) => {
-            console.error(`problem with request: ${e.message}`);
-        });
-
-        // Write data to request body
-        request.write(postData);
-        request.end();
-
-        // http.post(process.env.API_URL + "/confirm-payment", {
-        //     headers: {
-        //         "content-type": "application/json",
-        //         "content-length": Buffer.byteLength(postData),
-        //     },
-        // })
-        //     .write(postData)
-        //     .end();
     }, 10000);
+
     res.sendStatus(202);
 });
 

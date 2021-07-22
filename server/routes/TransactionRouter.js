@@ -1,63 +1,46 @@
 const {Router} = require("express");
-const {Transaction, Merchant} = require("../models/sequelize");
+const {Transaction} = require("../models/sequelize");
 const {prettifyValidationErrors} = require("../lib/utils");
-const http = require("http");
 const TransactionHistory = require("../models/sequelize/TransactionHistory");
 const Operation = require("../models/sequelize/Operation");
 const TransactionMongo = require("../models/mongo/Transaction");
 const OperationMongo = require("../models/mongo/Operation");
 const TransactionHistoryMongo = require("../models/mongo/TransactionHistory");
 const verifyAuthorization = require("../middlewares/verifyAuthorization");
+const fetch = require("node-fetch");
 
 const router = Router();
 
 router.post("/client-confirm-payment/:id", (req, res) => {
     const {id} = req.params;
 
-    Transaction.findOne({where: {id: id}}).then((transaction) => {
-        const data = JSON.stringify({
-            paymentInfo: req.body,
-            price: transaction.dataValues.totalPrice,
-            currency: transaction.dataValues.currency
+    Transaction.findOne({where: {id: id}})
+        .then((transaction) => {
+            const data = JSON.stringify({
+                paymentInfo: req.body,
+                price: transaction.dataValues.totalPrice,
+                currency: transaction.dataValues.currency
+            });
+
+            sendRequestToPsp(data).then((res) => console.log('allo'));
+        })
+        .catch((e) => {
+            res.sendStatus(500);
         });
+});
 
-        confirmPayment(data).then((res) => console.log('allo'));
+function sendRequestToPsp(data) {
+    return fetch('http://psp:4000/', {
+        method: "POST",
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: data
     });
+}
 
-    // const options = {
-    //     hostname: "psp",
-    //     port: 4000,
-    //     path: "/",
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         "Content-Length": Buffer.byteLength(data),
-    //     },
-    // };
-    //
-    // const request = http.request(options, (res) => {
-    //     res.setEncoding("utf8");
-    //     res.on("data", (chunk) => {
-    //         console.log(`BODY: ${chunk}`);
-    //     });
-    //     res.on("end", () => {
-    //         console.log("No more data in response.");
-    //     });
-    // });
-    //
-    // request.on("error", (e) => {
-    //     console.error(`problem with request: ${e.message}`);
-    // });
-    //
-    // // Write data to request body
-    // request.write(data);
-    // request.end();
-    //
-    // // confirmPayment(JSON.stringify(data));
-    //
-    // // const merchant = Merchant.findOne({ where: { secretKey: data.secretKey } });
-    //
-    // res.redirect("https://google.com");
+router.post("/confirm-payment", (req, res) => {
+    console.log("j'y suis hihi");
 });
 
 router.use(verifyAuthorization);
@@ -136,34 +119,6 @@ router.delete("/:id", (request, response) => {
         .then((data) => (data === 0 ? response.sendStatus(404) : response.sendStatus(204)))
         .catch((e) => response.sendStatus(500));
 });
-
-async function confirmPayment(data) {
-    const options = {
-        hostname: "localhost",
-        port: 4000,
-        path: "/",
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Content-Length": data.length,
-        },
-    };
-
-    const {http} = require("http");
-
-    const req = http.request(options, (res) => {
-        res.on("data", (d) => {
-            process.stdout.write(d);
-        });
-    });
-
-    req.on("error", (error) => {
-        console.error(error);
-    });
-
-    req.write(data);
-    req.end();
-}
 
 const saveToMongo = (transaction) => {
     new TransactionMongo({
