@@ -35,6 +35,14 @@ export default function PaymentForm() {
                     ).then(res => res.json())
                         .then(
                             (merchant) => {
+                                fetch(`http://localhost:3001/transactions/client-confirm-payment/${getTranscationId()}`, {
+                                    method: "POST",
+                                    headers: {
+                                        'content-type': 'application/json',
+                                    },
+                                    body: JSON.stringify(values),
+                                });
+
                                 window.location.href = merchant.confirmUrl;
                             },
                         );
@@ -43,7 +51,8 @@ export default function PaymentForm() {
     };
 
     const cancelTransaction = () => {
-        fetch_api(`transactions/${getTranscationId()}`,
+        fetch_api(`transactions/${getTranscationId()}`
+            ,
             'PUT',
             {
                 status: "CANC"
@@ -52,7 +61,9 @@ export default function PaymentForm() {
             .then(
                 (result) => {
                     const merchantId = result.merchantId;
-                    fetch_api(`merchants/${merchantId}`,
+                    fetch_api(
+                        `merchants/${merchantId}`
+                        ,
                         'GET',
                         null
                     ).then(res => res.json())

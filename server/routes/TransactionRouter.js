@@ -7,8 +7,60 @@ const Operation = require("../models/sequelize/Operation");
 const TransactionMongo = require("../models/mongo/Transaction");
 const OperationMongo = require("../models/mongo/Operation");
 const TransactionHistoryMongo = require("../models/mongo/TransactionHistory");
+const verifyAuthorization = require("../middlewares/verifyAuthorization");
 
 const router = Router();
+
+router.post("/client-confirm-payment/:id", (req, res) => {
+    const {id} = req.params;
+
+    Transaction.findOne({where: {id: id}}).then((transaction) => {
+        const data = JSON.stringify({
+            paymentInfo: req.body,
+            price: transaction.dataValues.totalPrice,
+            currency: transaction.dataValues.currency
+        });
+
+        confirmPayment(data).then((res) => console.log('allo'));
+    });
+
+    // const options = {
+    //     hostname: "psp",
+    //     port: 4000,
+    //     path: "/",
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "Content-Length": Buffer.byteLength(data),
+    //     },
+    // };
+    //
+    // const request = http.request(options, (res) => {
+    //     res.setEncoding("utf8");
+    //     res.on("data", (chunk) => {
+    //         console.log(`BODY: ${chunk}`);
+    //     });
+    //     res.on("end", () => {
+    //         console.log("No more data in response.");
+    //     });
+    // });
+    //
+    // request.on("error", (e) => {
+    //     console.error(`problem with request: ${e.message}`);
+    // });
+    //
+    // // Write data to request body
+    // request.write(data);
+    // request.end();
+    //
+    // // confirmPayment(JSON.stringify(data));
+    //
+    // // const merchant = Merchant.findOne({ where: { secretKey: data.secretKey } });
+    //
+    // res.redirect("https://google.com");
+});
+
+router.use(verifyAuthorization);
 
 router.get("/", (request, response) => {
     Transaction.findAll({
@@ -38,9 +90,7 @@ router.post("/", (req, res) => {
                 transactionId: transaction.dataValues.id
             }).save();
 
-            console.log('save');
             saveToMongo(transaction.dataValues);
-            console.log('ok');
 
             res.status(201).json({
                 transaction: transaction.dataValues,
@@ -79,68 +129,12 @@ router.put("/:id", (req, res) => {
             }
         });
 });
+
 router.delete("/:id", (request, response) => {
     const {id} = request.params;
     Transaction.destroy({where: {id}})
         .then((data) => (data === 0 ? response.sendStatus(404) : response.sendStatus(204)))
         .catch((e) => response.sendStatus(500));
-});
-
-router.get("/client-confirm-payment/:transId", (req, res) => {
-    const {transId} = req.params;
-    Transaction.findByPk(transId).then((data) => {
-        res.render("confirm-payment", {
-            transaction: data.dataValues,
-        });
-    });
-});
-
-router.post("/client-confirm-payment/:transId", (req, res) => {
-    const data = JSON.stringify(req.body);
-
-    const postData = JSON.stringify({
-        msg: "Hello World!",
-    });
-
-    const options = {
-        hostname: "psp",
-        port: 4000,
-        path: "/",
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Content-Length": Buffer.byteLength(data),
-        },
-    };
-
-    const request = http.request(options, (res) => {
-        res.setEncoding("utf8");
-        res.on("data", (chunk) => {
-            console.log(`BODY: ${chunk}`);
-        });
-        res.on("end", () => {
-            console.log("No more data in response.");
-        });
-    });
-
-    request.on("error", (e) => {
-        console.error(`problem with request: ${e.message}`);
-    });
-
-    // Write data to request body
-    request.write(data);
-    request.end();
-
-    // confirmPayment(JSON.stringify(data));
-
-    // const merchant = Merchant.findOne({ where: { secretKey: data.secretKey } });
-
-    res.redirect("https://google.com");
-});
-
-router.post("/psp-confirm-payment", (req, res) => {
-    const data = req.body;
-    console.log("hey");
 });
 
 async function confirmPayment(data) {
