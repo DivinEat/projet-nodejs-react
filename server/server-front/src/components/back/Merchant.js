@@ -14,10 +14,6 @@ export default function Merchant() {
                 (result) => {
                     setMerchants(result);
                 },
-                // TODO erreurs à gérer
-                // (error) => {
-                //     setError(error);
-                // }
             )
     }, []);
 
@@ -47,7 +43,7 @@ export default function Merchant() {
     return (
         <>
             <h1>Merchants</h1>
-            
+
             <ul>
                 {merchants.map((merchant) => (
                     <li key={merchant.id}>

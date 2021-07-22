@@ -45,9 +45,6 @@ export default function List({theme}) {
         0
     );
     const generateTransaction = () => {
-        // TODO merchantId
-        console.log('test');
-
         fetch_api("transactions", "POST",
             {
                 transaction: {

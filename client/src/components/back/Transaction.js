@@ -14,7 +14,7 @@ const Transaction = () => {
     const [modalHistory, setModalHistory] = useState(false);
 
     useEffect(() => {
-        fetch_api("transactions", "GET", null, false)
+        fetch_api("transactions/merchant", "GET", null, false)
             .then(res => {
                 return res.json();
             })

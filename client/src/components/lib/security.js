@@ -10,17 +10,13 @@ export function fetch_api(input, method, body, tryLogin) {
     if (body != null)
         init.body = JSON.stringify(body);
 
-    console.log('ludo');
     return fetch(`http://localhost:3001/${input}`, init).then((res) => {
-        console.log("avant 401");
         if (res.status === 401) {
-            console.log("401");
             if (tryLogin) {
                 return res;
             }
             return login().then(() => fetch_api(input, method, body, true));
         }
-        console.log('ok');
         return res;
     })
         .catch(function (e) {

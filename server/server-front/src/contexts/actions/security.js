@@ -10,7 +10,9 @@ export function fetch_api(input, method, body) {
     if (body != null)
         init.body = JSON.stringify(body);
 
-    return fetch(`/${input}`,init)
+    console.log(`http://localhost:3001/${input}`);
+
+    return fetch(`http://localhost:3001/${input}`, init)
         .then((res) => {
             if (res.status === 401) {
                 localStorage.removeItem('jwt_token');

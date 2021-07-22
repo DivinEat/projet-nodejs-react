@@ -27,7 +27,7 @@ function Credential() {
 
     return (
         <>
-            <h1>Credential</h1>
+            <h1>Credentials</h1>
 
             {clientId && clientSecret && (
                 <>

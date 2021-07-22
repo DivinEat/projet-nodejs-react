@@ -1,44 +1,85 @@
 const {Router} = require("express");
 const createJWT = require("../lib/security").createJWT;
+const {Credential, Merchant, User} = require("../models/sequelize")
+const bcrypt = require('bcryptjs');
 
 const router = Router();
 
 router.post("/login", (req, res) => {
     const {clientId, clientSecret} = req.body;
     const {username, password} = req.body;
-    let testAuth = false;
 
     if (clientId != null && clientSecret != null) {
-        testAuth = clientId === "test2@test.fr" && clientSecret === "test";
+        Credential.findOne({
+            where: {
+                "clientId": clientId,
+                "clientSecret": clientSecret,
+            }
+        })
+            .then((credentials) => {
+                if (credentials == null) {
+                    res.sendStatus(401);
+                    return;
+                }
+
+                return Merchant.findOne({
+                    where: {
+                        "id": credentials.merchantId
+                    }
+                })
+                    .then((merchant) => {
+                        if (merchant != null) {
+                            return createJWT(null, merchant)
+                                .then((token) => {
+                                    res.json({
+                                        "token": token,
+                                        "expires_in": 2592000,
+                                        "token_type": "Bearer",
+                                    })
+                                });
+                        }
+                        res.sendStatus(401);
+                    });
+            });
     }
 
     if (username != null && password != null) {
-        testAuth = username === "test2@test.fr" && password === "test";
-    }
+        User.findOne({
+            where: {
+                "username": username,
+            }
+        })
+            .then((user) => {
+                if (user == null) {
+                    res.sendStatus(401);
+                    return;
+                }
 
-    if (testAuth) {
-        createJWT({clientId}).then((token) => {
-            res.json({
-                "token": token,
-                "expires_in": 2592000,
-                "token_type": "Bearer",
+                return bcrypt.compare(password, user.password, (err, verif) => {
+                    if (verif === true)
+                        Merchant.findOne({
+                            where: {
+                                "id": user.MerchantId,
+                                "status": true
+                            }
+                        })
+                            .then((merchant) => {
+                                if (merchant != null) {
+                                    return createJWT(user, merchant)
+                                        .then((token) => {
+                                            res.json({
+                                                "token": token,
+                                                "expires_in": 2592000,
+                                                "token_type": "Bearer",
+                                            })
+                                        });
+                                }
+                                res.sendStatus(401);
+                            });
+                });
             })
-        });
-    } else {
-        res.sendStatus(401);
+            .catch((e) => console.log(e));
     }
-
-    // User.findOne({
-    //     where: {"username": username}
-    // })
-    //     .then((user) => {
-    //         user = user.dataValues;
-    //
-    //         bcrypt.compare(password, u.password, (err, verif) => {
-    //             verif === true ? createJWT({u.username}).then((token) => res.json({token})) : res.sendStatus(401);
-    //         });
-    //     })
-    // ;
 });
 
 module.exports = router;

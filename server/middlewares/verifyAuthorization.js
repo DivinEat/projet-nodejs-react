@@ -14,9 +14,9 @@ module.exports = function verifyAuthorization(req, res, next) {
         return;
     }
     verifJWT(token)
-        .then((user) => {
-            req.user = user;
-            req.merchant = user.merchant;
+        .then((data) => {
+            req.user = data.user;
+            req.merchant = data.merchant;
             next();
         })
         .catch(() => {

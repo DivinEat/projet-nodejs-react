@@ -54,9 +54,7 @@ router.get("/", (request, response) => {
 });
 router.post("/", (req, res) => {
     req.body.transaction.status = "INIT";
-
-    // token
-    // req.body.transaction.merchantId = "";
+    req.body.transaction.merchantId = req.merchant.id;
 
     new Transaction(req.body.transaction)
         .save()
@@ -90,6 +88,13 @@ router.post("/", (req, res) => {
             }
         });
 });
+router.get("/merchant", (request, response) => {
+    Transaction.findAll({
+        where: {merchantId: request.merchant.id}
+    })
+        .then((data) => (data === null ? response.sendStatus(404) : response.json(data)))
+        .catch((e) => response.sendStatus(500));
+});
 router.get("/:id", (request, response) => {
     const {id} = request.params;
     Transaction.findByPk(id)
@@ -98,12 +103,17 @@ router.get("/:id", (request, response) => {
 });
 router.put("/:id", (req, res) => {
     const {id} = req.params;
+    console.log(id);
     Transaction.update(req.body, {
         where: {id},
         returning: true,
         individualHooks: true,
     })
-        .then(([, [data]]) => (data !== undefined ? res.status(200).json(data) : res.sendStatus(404)))
+        .then(([, [data]]) => {
+            console.log("data")
+            console.log(data)
+            return (data !== undefined ? res.status(200).json(data) : res.sendStatus(404))
+        })
         .catch((e) => {
             if (e.name === "SequelizeValidationError") {
                 res.status(400).json(prettifyValidationErrors(e.errors));

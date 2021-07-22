@@ -6,7 +6,6 @@ function Home() {
     const [credentials, setCredentials] = useState('');
 
     useEffect(() => {
-        // TODO merchantId
         fetch_api('credentials',
             'GET',
             null
@@ -15,41 +14,23 @@ function Home() {
         })
             .then(
                 (result) => {
-                    setCredentials(result[0])
+                    setCredentials(result)
                 },
             );
     }, []);
 
     const generateNewCredential = () => {
-        // TODO merchantId
-        const token = localStorage.getItem('jwt_token');
-
-        fetch_api(`merchants/13`,
-            'PUT',
-            {
-                status: true
-            }
-        )
-            .then((res) => {
-                if (res.status !== 200) {
-                    console.log("Error");
-                    return;
-                }
-                return res.json();
+        fetch_api('credentials/generate',
+            'GET',
+            null
+        ).then((res) =>
+            res.json()
+        ).then((data) => {
+            setCredentials({
+                clientId: data.clientId,
+                clientSecret: data.clientSecret
             })
-            .then((data) => {
-                fetch_api(`credentials?${new URLSearchParams({merchantId: data.id})}`,
-                    'GET',
-                    null
-                ).then((res) =>
-                    res.json()
-                ).then((data) => {
-                    setCredentials({
-                        clientId: data[0].clientId,
-                        clientSecret: data[0].clientSecret
-                    })
-                })
-            });
+        });
     }
 
     return (

@@ -15,12 +15,12 @@ exports.verifJWT = function verifJWT(token) {
 };
 
 exports.createJWT = function createJWT(user, merchant) {
-    return new Promise((res, rej) =>
-        jwt.sign(
-            {
-                user: user,
-                merchant: merchant
-            },
+    return new Promise((res, rej) => {
+        const data = {merchant};
+
+        user != null ? data.user = user : null;
+
+        return jwt.sign(data,
             'process.env.JWT_SECRET',
             {algorithm: "HS512", expiresIn: 2592000},
             function (err, token) {
@@ -28,5 +28,5 @@ exports.createJWT = function createJWT(user, merchant) {
                 else res(token);
             }
         )
-    );
+    });
 };

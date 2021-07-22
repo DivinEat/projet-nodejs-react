@@ -1,18 +1,25 @@
 const {Router} = require("express");
 const {Credential} = require("../models/sequelize");
-const {prettifyValidationErrors} = require("../lib/utils");
+const {prettifyValidationErrors, generateCredentials} = require("../lib/utils");
 const decodeJWT = require("../lib/security").decodeJWT;
+
 
 const router = Router();
 
 router.get("/", (request, response) => {
-    console.log(request);
-    // const test = decodeJWT(request.header())
-
-    Credential.findAll({where: request.query})
+    Credential.findOne({where: {merchantId: request.merchant.id}})
         .then((data) => response.json(data))
         .catch((e) => response.sendStatus(500));
 });
+
+router.get("/generate", (request, response) => {
+    Credential.destroy({where: {merchantId: request.merchant.id}})
+        .then(() => new Credential(generateCredentials(request.merchant.id))
+            .save()
+            .then((credentials) => response.status(200).json(credentials.dataValues))
+        );
+});
+
 
 router.post("/", (req, res) => {
     new Credential(req.body)

@@ -3,14 +3,14 @@ import Button from "../lib/Button";
 
 export default function CredentialForm({onSubmit}) {
 
-    const [values, seValues] = useState({
+    const [values, setValues] = useState({
             clientId: "",
             clientSecret: "",
         }
     );
 
     const handleChange = (event) => {
-        seValues({
+        setValues({
             ...values,
             [event.target.name]: event.target.value,
         });
@@ -18,6 +18,10 @@ export default function CredentialForm({onSubmit}) {
 
     const handleSubmit = (values) => {
         onSubmit(values);
+        setValues({
+            clientId: "",
+            clientSecret: "",
+        });
     };
 
     return (

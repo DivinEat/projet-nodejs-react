@@ -1,7 +1,5 @@
 import React, {createContext, useState, useEffect} from 'react';
 import {login as flogin} from './actions/security';
-import jwtDecode from 'jwt-decode';
-import {set} from "mongoose";
 
 export const CredentialsContext = createContext();
 

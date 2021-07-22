@@ -14,13 +14,13 @@ const Transaction = ({merchant}) => {
     const [modalHistory, setModalHistory] = useState(false);
 
     useEffect(() => {
-        // TODO merchantId
-        const token = localStorage.getItem('jwt_token');
+        const input = merchant ? 'transactions/merchant' : 'transactions';
 
-        fetch_api('transactions',
+        fetch_api(input,
             'GET',
             null
         ).then(res => {
+
             return res.json();
         })
             .then(
@@ -29,8 +29,6 @@ const Transaction = ({merchant}) => {
                     setTransactionsDefault(result)
                 },
             );
-
-
     }, []);
 
     const getOperations = (transactionId) => {
