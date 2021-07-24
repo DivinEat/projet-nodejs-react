@@ -34,6 +34,10 @@ function App() {
                         <HeaderFront/>
                         <Page theme={theme} setTheme={setTheme}/>
                     </Route>
+                    <Route path="/transaction-success" exact>
+                        <HeaderFront/>
+                        <div>Transaction success</div>
+                    </Route>
                     <Route path="/confirmed-payment/:id" exact>
                         <HeaderFront/>
                         <Waiting/>
