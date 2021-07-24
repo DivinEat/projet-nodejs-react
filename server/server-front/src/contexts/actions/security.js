@@ -10,8 +10,6 @@ export function fetch_api(input, method, body) {
     if (body != null)
         init.body = JSON.stringify(body);
 
-    console.log(`http://localhost:3001/${input}`);
-
     return fetch(`http://localhost:3001/${input}`, init)
         .then((res) => {
             if (res.status === 401) {
@@ -25,7 +23,7 @@ export function fetch_api(input, method, body) {
 }
 
 export function login(user, pass) {
-    return fetch('/login', {
+    return fetch('http://localhost:3001/login', {
         method: 'POST',
         headers: {
             'content-type': 'application/json',

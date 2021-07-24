@@ -3,7 +3,6 @@ import Button from "../../lib/Button";
 import Modal from "../../lib/Modal";
 import Form from "./Form";
 import {fetch_api} from "../../lib/security";
-import {Redirect, useHistory} from "react-router-dom";
 
 const defaultList = [];
 
@@ -59,7 +58,6 @@ export default function List({theme}) {
         )
             .then((res) => res.json())
             .then((data) => {
-                    console.log(data);
                     window.location.href = data.payment_url;
                 }
             )

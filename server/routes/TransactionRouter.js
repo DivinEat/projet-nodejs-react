@@ -57,6 +57,7 @@ router.get("/", (request, response) => {
         .then((data) => response.json(data))
         .catch((e) => response.sendStatus(500));
 });
+
 router.post("/", (req, res) => {
     req.body.transaction.status = "INIT";
     req.body.transaction.merchantId = req.merchant.id;
@@ -108,17 +109,29 @@ router.get("/:id", (request, response) => {
 });
 router.put("/:id", (req, res) => {
     const {id} = req.params;
-    console.log(id);
-    Transaction.update(req.body, {
-        where: {id},
-        returning: true,
-        individualHooks: true,
-    })
-        .then(([, [data]]) => {
-            console.log("data")
-            console.log(data)
-            return (data !== undefined ? res.status(200).json(data) : res.sendStatus(404))
+    
+    Transaction.findByPk(id)
+        .then((previousDatas) => {
+            Transaction.update(req.body, {
+                where: {id},
+                returning: true,
+                individualHooks: true,
+            })
+                .then(([, [transaction]]) => {
+                    if (transaction == null) {
+                        return res.sendStatus(404);
+                    }
+
+                    new TransactionHistory({
+                        initialStatus: previousDatas.dataValues.status,
+                        newStatus: transaction.dataValues.status,
+                        transactionId: transaction.dataValues.id,
+                    }).save();
+
+                    return res.status(200).json(transaction);
+                })
         })
+
         .catch((e) => {
             if (e.name === "SequelizeValidationError") {
                 res.status(400).json(prettifyValidationErrors(e.errors));

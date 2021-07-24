@@ -20,6 +20,7 @@ function Credential() {
         if (credentials != null) {
             localStorage.setItem('clientId', credentials.clientId);
             localStorage.setItem('clientSecret', credentials.clientSecret);
+            localStorage.removeItem('jwt_token');
             setClientId(credentials.clientId);
             setClientSecret(credentials.clientSecret);
         }
