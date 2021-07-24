@@ -44,7 +44,7 @@ export default function PaymentForm() {
                                     body: JSON.stringify(values),
                                 });
 
-                                window.location.href = merchant.confirmUrl;
+                                window.location.href = merchant.confirmUrl + `/${getTranscationId()}`;
                             },
                         );
                 },

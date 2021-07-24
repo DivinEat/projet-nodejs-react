@@ -19,7 +19,8 @@ router.post("/client-confirm-payment/:id", (req, res) => {
             const data = JSON.stringify({
                 paymentInfo: req.body,
                 price: transaction.dataValues.totalPrice,
-                currency: transaction.dataValues.currency
+                currency: transaction.dataValues.currency,
+                transactionId: id
             });
 
             sendRequestToPsp(data).then((res) => console.log('allo'));
@@ -40,7 +41,11 @@ function sendRequestToPsp(data) {
 }
 
 router.post("/confirm-payment", (req, res) => {
-    console.log("j'y suis hihi");
+    Transaction.update({status: 'DONE'}, {
+        where: {id: req.body.transactionId},
+        returning: true,
+        individualHooks: true,
+    })
 });
 
 router.use(verifyAuthorization);

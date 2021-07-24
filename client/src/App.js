@@ -6,6 +6,7 @@ import HeaderFront from "./components/front/Header";
 import HeaderBack from "./components/back/Header";
 import Transaction from "./components/back/Transaction";
 import Credential from "./components/back/Credential";
+import Waiting from "./components/front/Waiting";
 
 function App() {
     const [theme, setTheme] = useState("dark");
@@ -33,9 +34,9 @@ function App() {
                         <HeaderFront/>
                         <Page theme={theme} setTheme={setTheme}/>
                     </Route>
-                    <Route path="/confirmed-payment" exact>
+                    <Route path="/confirmed-payment/:id" exact>
                         <HeaderFront/>
-                        <div>Payment confirmed</div>
+                        <Waiting/>
                     </Route>
                     <Route path="/canceled-payment" exact>
                         <HeaderFront/>
