@@ -1,20 +1,20 @@
 import LoginForm from "./LoginForm";
-import {CredentialsContext} from "../../contexts/CredentialsContext";
-import {useContext} from "react";
+import {LoginContext} from "../../contexts/LoginContext";
+import {useContext, useEffect, useState} from "react";
 import Button from "../../lib/Button";
 
-export default function Login() {
-    const {token, login, logout} = useContext(CredentialsContext);
+export default function Login({updateUserRole}) {
+    const {login, logout} = useContext(LoginContext);
+    const [token, setToken] = useState(localStorage.getItem('jwt_token') || null);
+
     return (
         <>
             {token && (
-                <>
-                    <Button title="Logout" onClick={logout}/>
-                </>
+                <Button title="Logout" onClick={() => logout(updateUserRole, setToken)}/>
             )}
             {(token == null || token === false) && (
                 <LoginForm
-                    login={values => login(values.username, values.password)}
+                    login={values => login(values.username, values.password, updateUserRole, setToken)}
                 />
             )}
             {token === false && (
@@ -23,3 +23,4 @@ export default function Login() {
         </>
     );
 }
+

@@ -10,7 +10,7 @@ function Home() {
             'GET',
             null
         ).then(res => {
-            return res.json();
+            return res != null ? res.json() : null;
         })
             .then(
                 (result) => {

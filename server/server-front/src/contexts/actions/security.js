@@ -35,15 +35,6 @@ export function login(user, pass) {
                 return res.json()
             return null;
         })
-        .then(data => {
-            if (data == null) {
-                localStorage.removeItem('jwt_token');
-                return null;
-            }
-
-            localStorage.setItem('jwt_token', data.token);
-            return data.token;
-        })
         .catch(function (e) {
             console.log(e);
         });

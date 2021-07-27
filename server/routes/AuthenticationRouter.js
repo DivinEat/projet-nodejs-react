@@ -56,30 +56,36 @@ router.post("/login", (req, res) => {
                 }
 
                 return bcrypt.compare(password, user.password, (err, verif) => {
-                    if (verif === true)
-                        Merchant.findOne({
-                            where: {
-                                "id": user.MerchantId,
-                                "status": true
-                            }
-                        })
-                            .then((merchant) => {
-                                if (merchant != null) {
+                        if (verif === true)
+                            Merchant.findOne({
+                                where: {
+                                    "id": user.MerchantId,
+                                    "status": true
+                                }
+                            })
+                                .then((merchant) => {
+                                    if (merchant == null)
+                                        res.sendStatus(401);
+
                                     return createJWT(user, merchant)
                                         .then((token) => {
-                                            res.json({
-                                                "token": token,
-                                                "expires_in": 2592000,
-                                                "token_type": "Bearer",
-                                            })
-                                        });
-                                }
-                                res.sendStatus(401);
-                            });
-                });
+                                                res.json({
+                                                    "token": {
+                                                        "value": token,
+                                                        "expires_in": 2592000,
+                                                        "token_type": "Bearer",
+                                                    },
+                                                    "userRole": user.role
+                                                })
+                                            }
+                                        );
+                                });
+                    }
+                );
             })
             .catch((e) => console.log(e));
     }
-});
+})
+;
 
 module.exports = router;

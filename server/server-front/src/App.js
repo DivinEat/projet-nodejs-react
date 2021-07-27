@@ -4,7 +4,7 @@ import Merchant from "./components/front/Merchant";
 import Transaction from "./components/Transaction";
 import Login from "./components/front/Login";
 import MerchantProvider from "./contexts/MerchantContext";
-import CredentialsProvider from "./contexts/CredentialsContext";
+import LoginProvider from "./contexts/LoginContext";
 import {BrowserRouter, Route} from "react-router-dom";
 import HeaderFront from "./components/front/Header";
 import HeaderBack from "./components/back/Header";
@@ -15,7 +15,7 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <CredentialsProvider>
+                <LoginProvider>
                     <BrowserRouter>
                         <Route path="/admin" exact>
                             <HeaderBack/>
@@ -51,7 +51,7 @@ function App() {
                             <Login/>
                         </Route>
                     </BrowserRouter>
-                </CredentialsProvider>
+                </LoginProvider>
             </header>
         </div>
     );

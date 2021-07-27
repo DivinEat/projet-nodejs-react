@@ -3,7 +3,7 @@ export function fetch_api(input, method, body, tryLogin) {
         method: method,
         headers: {
             'content-type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem("jwt_token")}`
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem("jwt_token"))}`
         },
     };
 
