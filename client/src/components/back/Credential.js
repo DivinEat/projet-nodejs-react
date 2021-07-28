@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import CredentialForm from "./CredentialForm";
+import {login} from "../lib/security";
 
 function Credential() {
     const [clientId, setClientId] = useState();
@@ -11,16 +12,17 @@ function Credential() {
             setClientSecret(localStorage.getItem('clientSecret'));
             return;
         }
-
         setClientId(null);
         setClientSecret(null);
     }, [])
 
     const save = (credentials) => {
+        login(credentials.clientId, credentials.clientSecret).then((token) => {
+            localStorage.setItem('jwt_token', token);
+        });
         if (credentials != null) {
             localStorage.setItem('clientId', credentials.clientId);
             localStorage.setItem('clientSecret', credentials.clientSecret);
-            localStorage.removeItem('jwt_token');
             setClientId(credentials.clientId);
             setClientSecret(credentials.clientSecret);
         }

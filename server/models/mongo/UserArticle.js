@@ -1,15 +1,15 @@
-const { Schema } = require("mongoose");
+const {Schema} = require("mongoose");
 const conn = require("../../lib/mongo");
 
-const UserArticleSchema = new Schema({
-  _id: Number,
-  firstname: String,
-  lastname: String,
-  username: String,
-  createdAt: Date,
-  Articles: Array,
+const UserSchema = new Schema({
+    _id: Number,
+    firstname: String,
+    lastname: String,
+    username: String,
+    createdAt: Date,
+    Articles: Array,
 });
 
-const UserArticle = conn.model("UserArticle", UserArticleSchema);
+const User = conn.model("User", UserSchema);
 
-module.exports = UserArticle;
+module.exports = User;

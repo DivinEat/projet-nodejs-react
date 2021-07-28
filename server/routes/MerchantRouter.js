@@ -1,6 +1,5 @@
-const User = require("../models/sequelize/User");
 const {Router} = require("express");
-const {Merchant, Credential} = require("../models/sequelize");
+const {Merchant, Credential, User} = require("../models/sequelize");
 const {prettifyValidationErrors, generateCredentials} = require("../lib/utils");
 const {sendMail} = require("../lib/mail");
 const verifyAuthorization = require("../middlewares/verifyAuthorization");
@@ -45,20 +44,20 @@ router.post("/", (req, res) => {
         });
 });
 
-router.use(verifyAuthorization);
-
-router.get("/", (request, response) => {
-    Merchant.findAll({where: request.query})
-        .then((data) => response.json(data))
-        .catch((e) => response.sendStatus(500));
-});
-
 router.get("/:id", (request, response) => {
     const {id} = request.params;
     Merchant.findByPk(id)
         .then((data) =>
             data === null ? response.sendStatus(404) : response.json(data)
         )
+        .catch((e) => response.sendStatus(500));
+});
+
+router.use(verifyAuthorization);
+
+router.get("/", (request, response) => {
+    Merchant.findAll({where: request.query})
+        .then((data) => response.json(data))
         .catch((e) => response.sendStatus(500));
 });
 

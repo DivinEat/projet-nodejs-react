@@ -41,7 +41,7 @@ function App() {
                         </MerchantProvider>
                         <Route path="/transactions" exact>
                             <HeaderFront/>
-                            <Transaction merchant={true}/>
+                            <Transaction/>
                         </Route>
                         <Route path="/transactions/client-confirm-payment/:id" exact>
                             <PaymentForm/>

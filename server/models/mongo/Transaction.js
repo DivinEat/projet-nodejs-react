@@ -12,6 +12,16 @@ const TransactionSchema = new Schema({
     status: String, // INIT, CANC, WAIT, DONE
 });
 
+TransactionSchema.index({
+    consumer: 'text',
+    shippingAddress: 'text',
+    billingAddress: 'text',
+    cart: 'text',
+    totalPrice: 'text',
+    currency: 'text',
+    status: 'text'
+});
+
 const Transaction = conn.model("Transaction", TransactionSchema);
 
 module.exports = Transaction;

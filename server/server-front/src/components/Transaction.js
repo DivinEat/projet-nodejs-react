@@ -1,10 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import SearchBar from './SearchBar';
 import Modal from "./lib/Modal";
 import Button from "./lib/Button";
 import {fetch_api} from "../contexts/actions/security";
+import {LoginContext} from "../contexts/LoginContext";
 
 const Transaction = ({merchant}) => {
+    const {userRole} = useContext(LoginContext);
     const [input, setInput] = useState('');
     const [transactionsDefault, setTransactionsDefault] = useState([]);
     const [transactions, setTransactions] = useState([]);
@@ -14,14 +16,13 @@ const Transaction = ({merchant}) => {
     const [modalHistory, setModalHistory] = useState(false);
 
     useEffect(() => {
-        const input = merchant ? 'transactions/merchant' : 'transactions';
+        const input = userRole === 'ADMIN' ? 'transactions' : 'transactions/merchant';
 
         fetch_api(input,
             'GET',
             null
         ).then(res => {
-
-            return res.json();
+            return res != null ? res.json() : null;
         })
             .then(
                 (result) => {

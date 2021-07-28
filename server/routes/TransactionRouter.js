@@ -48,6 +48,41 @@ router.post("/confirm-payment", (req, res) => {
     })
 });
 
+router.put("/:id", (req, res) => {
+    const {id} = req.params;
+
+    Transaction.findByPk(id)
+        .then((previousDatas) => {
+            Transaction.update(req.body, {
+                where: {id},
+                returning: true,
+                individualHooks: true,
+            })
+                .then(([, [transaction]]) => {
+                    if (transaction == null) {
+                        return res.sendStatus(404);
+                    }
+
+                    new TransactionHistory({
+                        initialStatus: previousDatas.dataValues.status,
+                        newStatus: transaction.dataValues.status,
+                        transactionId: transaction.dataValues.id,
+                    }).save();
+
+                    return res.status(200).json(transaction);
+                })
+        })
+
+        .catch((e) => {
+            if (e.name === "SequelizeValidationError") {
+                res.status(400).json(prettifyValidationErrors(e.errors));
+            } else {
+                res.sendStatus(500);
+            }
+        });
+});
+
+
 router.use(verifyAuthorization);
 
 router.get("/", (request, response) => {
@@ -95,50 +130,36 @@ router.post("/", (req, res) => {
         });
 });
 router.get("/merchant", (request, response) => {
-    Transaction.findAll({
-        where: {merchantId: request.merchant.id}
-    })
-        .then((data) => (data === null ? response.sendStatus(404) : response.json(data)))
+    TransactionMongo.find({merchantId: request.merchant.id}).exec()
+        .then(
+            (data) => {
+                console.log(data);
+                data === null ? response.sendStatus(404) : response.json(data)
+            }
+        )
         .catch((e) => response.sendStatus(500));
 });
+
+router.post("/merchant-search", (request, response) => {
+    const query = request.body && request.body.query
+        ? {merchantId: request.merchant.id, $text: {$search: request.body.query, $caseSensitive: false}}
+        : {merchantId: request.merchant.id}
+    
+    TransactionMongo.find(query).exec()
+        .then(
+            (data) => {
+                console.log(data);
+                data === null ? response.sendStatus(404) : response.json(data)
+            }
+        )
+        .catch((e) => response.sendStatus(500));
+});
+
 router.get("/:id", (request, response) => {
     const {id} = request.params;
     Transaction.findByPk(id)
         .then((data) => (data === null ? response.sendStatus(404) : response.json(data)))
         .catch((e) => response.sendStatus(500));
-});
-router.put("/:id", (req, res) => {
-    const {id} = req.params;
-    
-    Transaction.findByPk(id)
-        .then((previousDatas) => {
-            Transaction.update(req.body, {
-                where: {id},
-                returning: true,
-                individualHooks: true,
-            })
-                .then(([, [transaction]]) => {
-                    if (transaction == null) {
-                        return res.sendStatus(404);
-                    }
-
-                    new TransactionHistory({
-                        initialStatus: previousDatas.dataValues.status,
-                        newStatus: transaction.dataValues.status,
-                        transactionId: transaction.dataValues.id,
-                    }).save();
-
-                    return res.status(200).json(transaction);
-                })
-        })
-
-        .catch((e) => {
-            if (e.name === "SequelizeValidationError") {
-                res.status(400).json(prettifyValidationErrors(e.errors));
-            } else {
-                res.sendStatus(500);
-            }
-        });
 });
 
 router.delete("/:id", (request, response) => {
@@ -149,6 +170,7 @@ router.delete("/:id", (request, response) => {
 });
 
 const saveToMongo = (transaction) => {
+    console.log('gere')
     new TransactionMongo({
         consumer: transaction.consumer,
         shippingAddress: transaction.shippingAddress,

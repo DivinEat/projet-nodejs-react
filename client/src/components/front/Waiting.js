@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {fetch_api} from "../lib/security";
 
 function Credential() {

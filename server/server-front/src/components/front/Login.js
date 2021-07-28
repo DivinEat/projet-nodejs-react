@@ -3,18 +3,17 @@ import {LoginContext} from "../../contexts/LoginContext";
 import {useContext, useEffect, useState} from "react";
 import Button from "../../lib/Button";
 
-export default function Login({updateUserRole}) {
-    const {login, logout} = useContext(LoginContext);
-    const [token, setToken] = useState(localStorage.getItem('jwt_token') || null);
+export default function Login() {
+    const {login, logout, token} = useContext(LoginContext);
 
     return (
         <>
             {token && (
-                <Button title="Logout" onClick={() => logout(updateUserRole, setToken)}/>
+                <Button title="Logout" onClick={() => logout()}/>
             )}
             {(token == null || token === false) && (
                 <LoginForm
-                    login={values => login(values.username, values.password, updateUserRole, setToken)}
+                    login={values => login(values.username, values.password)}
                 />
             )}
             {token === false && (

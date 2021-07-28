@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
 
 function Header() {
@@ -10,7 +10,6 @@ function Header() {
                 <Link to="/admin/transactions">Transactions</Link>
                 <Link to="/admin/merchants">Merchants</Link>
                 <Link to="/">Home</Link>
-                <Link to="/login">Login</Link>
             </div>
         </nav>
     );

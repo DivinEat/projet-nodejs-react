@@ -23,6 +23,7 @@ export function fetch_api(input, method, body) {
 }
 
 export function login(user, pass) {
+    console.log('login');
     return fetch('http://localhost:3001/login', {
         method: 'POST',
         headers: {
@@ -32,7 +33,7 @@ export function login(user, pass) {
     })
         .then(res => {
             if (res.status === 200)
-                return res.json()
+                return res.json();
             return null;
         })
         .catch(function (e) {

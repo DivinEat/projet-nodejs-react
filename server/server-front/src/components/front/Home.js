@@ -1,37 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {fetch_api} from "../../contexts/actions/security";
 import Button from "../lib/Button";
+import {LoginContext} from "../../contexts/LoginContext";
 
 function Home() {
-    const [credentials, setCredentials] = useState('');
+    const {credentials, getCredentials} = useContext(LoginContext);
 
     useEffect(() => {
-        fetch_api('credentials',
-            'GET',
-            null
-        ).then(res => {
-            return res != null ? res.json() : null;
-        })
-            .then(
-                (result) => {
-                    setCredentials(result)
-                },
-            );
+        getCredentials();
     }, []);
-
-    const generateNewCredential = () => {
-        fetch_api('credentials/generate',
-            'GET',
-            null
-        ).then((res) =>
-            res.json()
-        ).then((data) => {
-            setCredentials({
-                clientId: data.clientId,
-                clientSecret: data.clientSecret
-            })
-        });
-    }
 
     return (
         <>
@@ -45,7 +22,7 @@ function Home() {
                     </div>
 
                     <Button className="btn-credential" title="Generate new credential"
-                            onClick={() => generateNewCredential()}/>
+                            onClick={() => getCredentials()}/>
                 </>
             )}
         </>

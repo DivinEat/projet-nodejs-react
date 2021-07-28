@@ -7,6 +7,7 @@ export const MerchantContext = createContext();
 export default function MerchantProvider({children}) {
     const [registerSuccess, setRegisterSuccess] = useState(false);
     const [error, setError] = useState(null);
+    
 
     const save = (societyName, kbis, confirmUrl, cancelUrl, transactionSuccessUrl, currency, username, password) => {
         const data = JSON.stringify({

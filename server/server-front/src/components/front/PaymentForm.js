@@ -36,13 +36,10 @@ export default function PaymentForm() {
                     ).then(res => res.json())
                         .then(
                             (merchant) => {
-                                fetch(`http://localhost:3001/transactions/client-confirm-payment/${getTranscationId()}`, {
-                                    method: "POST",
-                                    headers: {
-                                        'content-type': 'application/json',
-                                    },
-                                    body: JSON.stringify(values),
-                                });
+                                fetch_api(
+                                    `http://localhost:3001/transactions/client-confirm-payment/${getTranscationId()}`,
+                                    'POST',
+                                    values);
 
                                 window.location.href = merchant.confirmUrl + `/${getTranscationId()}`;
                             },

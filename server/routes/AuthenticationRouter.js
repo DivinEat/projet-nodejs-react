@@ -50,13 +50,16 @@ router.post("/login", (req, res) => {
             }
         })
             .then((user) => {
+                console.log("here")
                 if (user == null) {
+                    console.log("here2")
+
                     res.sendStatus(401);
                     return;
                 }
 
                 return bcrypt.compare(password, user.password, (err, verif) => {
-                        if (verif === true)
+                        if (verif === true) {
                             Merchant.findOne({
                                 where: {
                                     "id": user.MerchantId,
@@ -64,8 +67,10 @@ router.post("/login", (req, res) => {
                                 }
                             })
                                 .then((merchant) => {
-                                    if (merchant == null)
+                                    if (merchant == null && user.role !== 'ADMIN') {
                                         res.sendStatus(401);
+                                        return;
+                                    }
 
                                     return createJWT(user, merchant)
                                         .then((token) => {
@@ -80,6 +85,7 @@ router.post("/login", (req, res) => {
                                             }
                                         );
                                 });
+                        }
                     }
                 );
             })
