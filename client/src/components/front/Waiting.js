@@ -5,7 +5,7 @@ function Credential() {
 
     useEffect(() => {
         setInterval(() => {
-            return fetch_api(`transactions/${getTransactionId()}`,
+            return fetch_api(`transactions/get/${getTransactionId()}`,
                 'GET', null
             ).then((res) => res.json())
                 .then((transaction) => {
@@ -13,7 +13,7 @@ function Credential() {
                         fetch_api(`merchants/${transaction.merchantId}`,
                             'GET',
                             null
-                        ).then(res => res.json())
+                        ).then(res => res ? res.json() : null)
                             .then(
                                 (merchant) => {
                                     window.location.href = merchant.transactionSuccessUrl;
@@ -21,7 +21,7 @@ function Credential() {
                             );
                     }
                 });
-        }, 1000);
+        }, 2000);
     }, []);
 
     const getTransactionId = () => {

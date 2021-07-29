@@ -67,7 +67,10 @@ router.post("/login", (req, res) => {
                                 }
                             })
                                 .then((merchant) => {
+                                    console.log("here1")
+
                                     if (merchant == null && user.role !== 'ADMIN') {
+                                        console.log("here2")
                                         res.sendStatus(401);
                                         return;
                                     }

@@ -42,7 +42,8 @@ export default function PaymentForm() {
                                     `transactions/client-confirm-payment/${getTranscationId()}`,
                                     'POST',
                                     values);
-                                // window.location.href = merchant.confirmUrl + `/${getTranscationId()}`;
+                                
+                                window.location.href = merchant.confirmUrl + `/${getTranscationId()}`;
                             },
                         );
                 },

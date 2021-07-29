@@ -24,7 +24,6 @@ router.post("/client-confirm-payment/:id", (req, res) => {
             });
 
             sendRequestToPsp(data).then((res) => {
-                console.log(res.json);
                 res != null ? res.json : null
             });
         })
@@ -44,7 +43,7 @@ function sendRequestToPsp(data) {
 }
 
 router.post("/confirm-payment", (req, res) => {
-    Transaction.findByPk(id)
+    Transaction.findByPk(req.body.transactionId)
         .then((previousDatas) => {
             Transaction.update({status: 'DONE'}, {
                 where: {id: req.body.transactionId},
@@ -52,7 +51,8 @@ router.post("/confirm-payment", (req, res) => {
                 individualHooks: true,
             })
                 .then(([, [transaction]]) => {
-
+                    console.log("transaction")
+                    console.log(transaction)
                     updateTransactionToMongo(transaction.dataValues);
 
                     new TransactionHistory({
@@ -65,7 +65,6 @@ router.post("/confirm-payment", (req, res) => {
                 })
         })
     ;
-
 
 });
 
@@ -107,8 +106,30 @@ router.put("/:id", (req, res) => {
         });
 });
 
+router.get("/get/:id", (request, response) => {
+    const {id} = request.params;
+    console.log("id")
+    console.log(id)
+    Transaction.findByPk(id)
+        .then((data) => (data === null ? response.sendStatus(404) : response.json(data)))
+        .catch((e) => response.sendStatus(500));
+});
 
 router.use(verifyAuthorization);
+
+router.get("/merchant", (request, response) => {
+    console.log("request.merchant.id");
+    console.log(request.merchant.id);
+    TransactionMongo.find({merchantId: request.merchant.id}).exec()
+        .then(
+            (data) => {
+                console.log("data")
+                console.log(data)
+                data === null ? response.sendStatus(404) : response.json(data)
+            }
+        )
+        .catch((e) => response.sendStatus(500));
+});
 
 router.get("/", (request, response) => {
     Transaction.findAll({
@@ -158,35 +179,23 @@ router.post("/", (req, res) => {
             }
         });
 });
-router.get("/merchant", (request, response) => {
-    TransactionMongo.find({merchantId: request.merchant.id}).exec()
-        .then(
-            (data) => {
-                data === null ? response.sendStatus(404) : response.json(data)
-            }
-        )
-        .catch((e) => response.sendStatus(500));
-});
 
 router.post("/merchant-search", (request, response) => {
     const query = request.body && request.body.query
         ? {merchantId: request.merchant.id, $text: {$search: request.body.query, $caseSensitive: false}}
         : {merchantId: request.merchant.id}
-    
+    console.log("query")
+    console.log(query)
     TransactionMongo.find(query).exec()
         .then(
             (data) => {
+                console.log("data");
+                console.log(data);
                 data === null ? response.sendStatus(404) : response.json(data)
             }
         )
-        .catch((e) => response.sendStatus(500));
-});
-
-router.get("/:id", (request, response) => {
-    const {id} = request.params;
-    Transaction.findByPk(id)
-        .then((data) => (data === null ? response.sendStatus(404) : response.json(data)))
-        .catch((e) => response.sendStatus(500));
+        .catch
+        ((e) => response.sendStatus(500));
 });
 
 router.delete("/:id", (request, response) => {
@@ -234,10 +243,10 @@ const saveTransactionHistoryToMongo = (data) => {
 };
 
 const updateTransactionToMongo = (data) => {
-    TransactionMongo.findOne({ id: data.id}, function (err, transaction){
+    TransactionMongo.findOne({id: data.id}, function (err, transaction) {
         transaction.save();
         TransactionMongo.replaceOne(
-            { id: data.id },
+            {id: data.id},
             {
                 id: data.id,
                 consumer: data.consumer,
@@ -254,7 +263,7 @@ const updateTransactionToMongo = (data) => {
 };
 
 const deleteTransactionFromMongo = (id) => {
-    TransactionMongo.findOne({ id: id}, function (err, transaction){
+    TransactionMongo.findOne({id: id}, function (err, transaction) {
         transaction.delete();
     });
 };

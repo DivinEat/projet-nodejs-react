@@ -43,6 +43,7 @@ export default function List({theme}) {
         (acc, item) => acc + item.unitPrice * item.quantity,
         0
     );
+
     const generateTransaction = () => {
         fetch_api("transactions", "POST",
             {

@@ -9,16 +9,8 @@ const Transaction = ({merchant}) => {
     const {userRole} = useContext(LoginContext);
     const [input, setInput] = useState('');
     const [transactionsDefault, setTransactionsDefault] = useState([]);
-    const [transactions, setTransactions] = useState([]);
-    const [operations, setOperations] = useState([]);
-    const [histories, setHistories] = useState([]);
-    const [modalOperation, setModalOperation] = useState(false);
-    const [modalHistory, setModalHistory] = useState(false);
-
-    useEffect(() => {
-        const input = userRole === 'ADMIN' ? 'transactions' : 'transactions/merchant';
-
-        fetch_api(input,
+    const [transactions, setTransactions] = useState(() => {
+        fetch_api(userRole === 'ADMIN' ? 'transactions' : 'transactions/merchant',
             'GET',
             null
         ).then(res => {
@@ -29,8 +21,12 @@ const Transaction = ({merchant}) => {
                     setTransactions(result)
                     setTransactionsDefault(result)
                 },
-            );
-    }, []);
+            )
+    });
+    const [operations, setOperations] = useState([]);
+    const [histories, setHistories] = useState([]);
+    const [modalOperation, setModalOperation] = useState(false);
+    const [modalHistory, setModalHistory] = useState(false);
 
     const getOperations = (transactionId) => {
         fetch_api(`operations?${new URLSearchParams({transactionId: transactionId})}`,
@@ -93,16 +89,22 @@ const Transaction = ({merchant}) => {
                 setKeyword={updateInput}
             />
 
-            <ul>
-                {transactions.map((transaction) => (
-                    <li key={transaction.id}>
-                        {transaction.consumer} {transaction.shippingAddress} {transaction.billingAddress}
-                        {transaction.cart} {transaction.totalPrice} {transaction.currency} {transaction.status}
-                        <Button title="Show operations" onClick={() => getOperations(transaction.id)}/>
-                        <Button title="Show history" onClick={() => getHistory(transaction.id)}/>
-                    </li>
-                ))}
-            </ul>
+            {transactions != null && (
+                <ul>
+                    {transactions.map((transaction) => (
+                        <li key={transaction._id}>
+                            {transaction.consumer} {transaction.shippingAddress} {transaction.billingAddress}
+                            {transaction.cart} {transaction.totalPrice} {transaction.currency} {transaction.status}
+                            <Button title="Show operations" onClick={() => getOperations(transaction._id)}/>
+                            <Button title="Show history" onClick={() => getHistory(transaction._id)}/>
+                        </li>
+                    ))}
+                </ul>
+            )}
+
+            {transactions == null && (
+                <p>Aucune transaction trouvée.</p>
+            )}
 
             <Modal title="Operations" open={modalOperation} onClose={clearOperations}>
                 {modalOperation && (

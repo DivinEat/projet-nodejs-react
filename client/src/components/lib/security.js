@@ -9,9 +9,11 @@ export function fetch_api(input, method, body) {
 
     if (body != null)
         init.body = JSON.stringify(body);
-    
+
 
     return fetch(`http://localhost:3001/${input}`, init).then((res) => {
+        console.log("res")
+        console.log(res.json)
         return res;
     })
         .catch(function (e) {

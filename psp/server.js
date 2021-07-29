@@ -4,8 +4,12 @@ const fetch = require("node-fetch");
 const app = express();
 app.use(express.json());
 
+
 app.post("/", function (req, res) {
+    console.log("ICI psp1")
+
     setTimeout(() => {
+        console.log("ICI psp2")
         fetch('http://server:3000/transactions/confirm-payment', {
             method: "POST",
             headers: {

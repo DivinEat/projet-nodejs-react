@@ -7,14 +7,17 @@ import {fetch_api} from "../lib/security";
 const Transaction = () => {
     const [transactions, setTransactions] = useState(
         () => {
-            fetch_api(`transactions/merchant`,
-                'GET',
+            fetch_api(`transactions/merchant-search`,
+                'POST',
                 null
             ).then(res => {
-                return res.json();
+                console.log(res);
+                return res ? res.json() : null;
             })
                 .then(
                     (result) => {
+                        console.log("result")
+                        console.log(result)
                         setTransactions(
                             (result == null || !result.length) ? null : result
                         );
@@ -77,6 +80,8 @@ const Transaction = () => {
             })
             .then(
                 (result) => {
+                    console.log("result")
+                    console.log(result)
                     setTransactions(result)
                 },
             );
