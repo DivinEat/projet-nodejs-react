@@ -4,11 +4,7 @@ import Button from "../lib/Button";
 import {LoginContext} from "../../contexts/LoginContext";
 
 function Home() {
-    const {credentials, getCredentials} = useContext(LoginContext);
-
-    useEffect(() => {
-        getCredentials();
-    }, []);
+    const {credentials, generateCredentials} = useContext(LoginContext);
 
     return (
         <>
@@ -22,7 +18,7 @@ function Home() {
                     </div>
 
                     <Button className="btn-credential" title="Generate new credential"
-                            onClick={() => getCredentials()}/>
+                            onClick={() => generateCredentials()}/>
                 </>
             )}
         </>

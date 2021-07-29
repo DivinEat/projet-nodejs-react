@@ -4,7 +4,6 @@ const Article = require("./Article");
 const Tag = require("./Tag");
 const Merchant = require("./Merchant");
 const Credential = require("./Credential");
-const UserArticle = require("../mongo/UserArticle");
 const Transaction = require("./Transaction");
 const TransactionHistory = require("./TransactionHistory");
 const Operation = require("./Operation");
@@ -17,9 +16,6 @@ const denormalizeUser = (user) => {
     }).then((data) => {
         const denormalizedUser = data.toJSON();
         denormalizedUser._id = denormalizedUser.id;
-        UserArticle.findOneAndReplace({ _id: denormalizedUser.id }, denormalizedUser, { upsert: true, new: true }).then(
-            (data) => console.log(`User ${data._id} saved to mongo`)
-        );
     });
 };
 

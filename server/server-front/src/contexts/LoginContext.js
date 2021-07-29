@@ -4,9 +4,38 @@ import {fetch_api, login as flogin} from './actions/security';
 export const LoginContext = createContext();
 
 export default function LoginProvider({children}) {
+
+    const getCredentials = () => {
+        fetch_api('credentials',
+            'GET',
+            null
+        ).then(res => {
+            return res != null ? res.json() : null;
+        })
+            .then(
+                (data) => {
+                    if (data) setCredentials(data);
+                },
+            );
+    };
+
     const [token, setToken] = useState(localStorage.getItem('jwt_token') || null);
     const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || null);
-    const [credentials, setCredentials] = useState(localStorage.getItem('credentials') || null);
+    const [credentials, setCredentials] = useState(() => getCredentials());
+
+    const generateCredentials = () => {
+        fetch_api('credentials/generate',
+            'GET',
+            null
+        ).then(res => {
+            return res != null ? res.json() : null;
+        })
+            .then(
+                (data) => {
+                    if (data) setCredentials(data);
+                },
+            );
+    };
 
     const login = (username, password) => {
         flogin(username, password).then(data => {
@@ -31,20 +60,6 @@ export default function LoginProvider({children}) {
         window.location.href = "http://localhost:3002/";
     };
 
-    const getCredentials = () => {
-        fetch_api('credentials',
-            'GET',
-            null
-        ).then(res => {
-            return res != null ? res.json() : null;
-        })
-            .then(
-                (data) => {
-                    if (data) setCredentials(data);
-                },
-            );
-    }
-
     return (
         <LoginContext.Provider
             value={{
@@ -56,7 +71,7 @@ export default function LoginProvider({children}) {
                 setToken,
                 credentials,
                 setCredentials,
-                getCredentials
+                generateCredentials
             }}>
             {children}
         </LoginContext.Provider>

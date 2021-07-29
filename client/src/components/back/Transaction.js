@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import SearchBar from './SearchBar';
 import Modal from "../lib/Modal";
 import Button from "../lib/Button";
@@ -15,7 +15,9 @@ const Transaction = () => {
             })
                 .then(
                     (result) => {
-                        setTransactions(result);
+                        setTransactions(
+                            (result == null || !result.length) ? null : result
+                        );
                     }
                 );
         });
@@ -40,21 +42,6 @@ const Transaction = () => {
 
         setModalOperation(true);
     }
-
-    // useEffect(() => {
-    //     console.log("lkjlk");
-    //     fetch_api(`transactions/merchant`,
-    //         'GET',
-    //         null
-    //     ).then(res => {
-    //         return res.json();
-    //     })
-    //         .then(
-    //             (result) => {
-    //                 setTransactions(result);
-    //             }
-    //         )
-    // }, [transactions]);
 
     const clearOperations = () => {
         setModalOperation(false);
@@ -84,18 +71,12 @@ const Transaction = () => {
     };
 
     const searchTransactions = (query) => {
-        console.log("query");
-        console.log(query);
         fetch_api("transactions/merchant-search", "POST", {query: query})
             .then(res => {
-                console.log("res")
-                console.log(res)
                 return res != null ? res.json() : null;
             })
             .then(
                 (result) => {
-                    console.log("result")
-                    console.log(result)
                     setTransactions(result)
                 },
             );

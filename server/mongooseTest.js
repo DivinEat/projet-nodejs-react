@@ -1,4 +1,3 @@
-const Weather = require("./models/mongo/Weather");
 
 new Weather({
   datetime: "2020-03-04",

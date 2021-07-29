@@ -23,7 +23,10 @@ router.post("/client-confirm-payment/:id", (req, res) => {
                 transactionId: id
             });
 
-            sendRequestToPsp(data).then((res) => console.log('allo'));
+            sendRequestToPsp(data).then((res) => {
+                console.log(res.json);
+                res != null ? res.json : null
+            });
         })
         .catch((e) => {
             res.sendStatus(500);
@@ -41,11 +44,29 @@ function sendRequestToPsp(data) {
 }
 
 router.post("/confirm-payment", (req, res) => {
-    Transaction.update({status: 'DONE'}, {
-        where: {id: req.body.transactionId},
-        returning: true,
-        individualHooks: true,
-    })
+    Transaction.findByPk(id)
+        .then((previousDatas) => {
+            Transaction.update({status: 'DONE'}, {
+                where: {id: req.body.transactionId},
+                returning: true,
+                individualHooks: true,
+            })
+                .then(([, [transaction]]) => {
+
+                    updateTransactionToMongo(transaction.dataValues);
+
+                    new TransactionHistory({
+                        initialStatus: previousDatas.dataValues.status,
+                        newStatus: transaction.dataValues.status,
+                        transactionId: transaction.dataValues.id,
+                    }).save().then((transactionHistory) => {
+                        saveTransactionHistoryToMongo(transactionHistory.dataValues);
+                    });
+                })
+        })
+    ;
+
+
 });
 
 router.put("/:id", (req, res) => {
@@ -59,15 +80,19 @@ router.put("/:id", (req, res) => {
                 individualHooks: true,
             })
                 .then(([, [transaction]]) => {
-                    if (transaction == null) {
+                    if (transaction == null)
                         return res.sendStatus(404);
-                    }
+
+                    updateTransactionToMongo(transaction.dataValues);
 
                     new TransactionHistory({
                         initialStatus: previousDatas.dataValues.status,
                         newStatus: transaction.dataValues.status,
                         transactionId: transaction.dataValues.id,
-                    }).save();
+                    }).save().then((transactionHistory) => {
+                        saveTransactionHistoryToMongo(transactionHistory.dataValues);
+                    });
+
 
                     return res.status(200).json(transaction);
                 })
@@ -100,19 +125,23 @@ router.post("/", (req, res) => {
     new Transaction(req.body.transaction)
         .save()
         .then((transaction) => {
+            saveTransactionToMongo(transaction.dataValues);
+
             new TransactionHistory({
                 initialStatus: null,
                 newStatus: transaction.dataValues.status,
                 transactionId: transaction.dataValues.id,
-            }).save();
+            }).save().then((transactionHistory) => {
+                saveTransactionHistoryToMongo(transactionHistory.dataValues);
+            });
 
             new Operation({
                 amount: transaction.dataValues.amount,
                 type: 'CAPTURE',
                 transactionId: transaction.dataValues.id
-            }).save();
-
-            saveToMongo(transaction.dataValues);
+            }).save().then((operation) => {
+                saveOperationToMongo(operation.dataValues);
+            });
 
             res.status(201).json({
                 transaction: transaction.dataValues,
@@ -133,7 +162,6 @@ router.get("/merchant", (request, response) => {
     TransactionMongo.find({merchantId: request.merchant.id}).exec()
         .then(
             (data) => {
-                console.log(data);
                 data === null ? response.sendStatus(404) : response.json(data)
             }
         )
@@ -148,7 +176,6 @@ router.post("/merchant-search", (request, response) => {
     TransactionMongo.find(query).exec()
         .then(
             (data) => {
-                console.log(data);
                 data === null ? response.sendStatus(404) : response.json(data)
             }
         )
@@ -165,34 +192,72 @@ router.get("/:id", (request, response) => {
 router.delete("/:id", (request, response) => {
     const {id} = request.params;
     Transaction.destroy({where: {id}})
-        .then((data) => (data === 0 ? response.sendStatus(404) : response.sendStatus(204)))
+        .then((data) => {
+            if (data === 0)
+                response.sendStatus(404)
+            deleteTransactionFromMongo(id);
+            response.sendStatus(204);
+        })
         .catch((e) => response.sendStatus(500));
 });
 
-const saveToMongo = (transaction) => {
-    console.log('gere')
-    new TransactionMongo({
-        consumer: transaction.consumer,
-        shippingAddress: transaction.shippingAddress,
-        billingAddress: transaction.billingAddress,
-        cart: transaction.cart,
-        totalPrice: transaction.totalPrice,
-        currency: transaction.currency,
-        merchantId: transaction.merchantId,
-        status: transaction.status
+const saveTransactionToMongo = (data) => {
+    return new TransactionMongo({
+        id: data.id,
+        consumer: data.consumer,
+        shippingAddress: data.shippingAddress,
+        billingAddress: data.billingAddress,
+        cart: data.cart,
+        totalPrice: data.totalPrice,
+        currency: data.currency,
+        merchantId: data.merchantId,
+        status: data.status,
     }).save();
+}
 
-    new TransactionHistoryMongo({
-        initialStatus: null,
-        newStatus: transaction.status,
-        transactionId: transaction.transactionId,
-    }).save();
-
-    new OperationMongo({
-        amount: transaction.amount,
+const saveOperationToMongo = (data) => {
+    return new OperationMongo({
+        id: data.id,
+        amount: data.amount,
         type: 'CAPTURE',
-        transactionId: transaction.id,
+        transactionId: data.transactionId
     }).save();
 };
+
+const saveTransactionHistoryToMongo = (data) => {
+    return new TransactionHistoryMongo({
+        id: data.id,
+        initialStatus: data.initialStatus,
+        newStatus: data.newStatus,
+        transactionId: data.transactionId,
+    }).save();
+};
+
+const updateTransactionToMongo = (data) => {
+    TransactionMongo.findOne({ id: data.id}, function (err, transaction){
+        transaction.save();
+        TransactionMongo.replaceOne(
+            { id: data.id },
+            {
+                id: data.id,
+                consumer: data.consumer,
+                shippingAddress: data.shippingAddress,
+                billingAddress: data.billingAddress,
+                cart: data.cart,
+                totalPrice: data.totalPrice,
+                currency: data.currency,
+                merchantId: data.merchantId,
+                status: data.status
+            }
+        );
+    });
+};
+
+const deleteTransactionFromMongo = (id) => {
+    TransactionMongo.findOne({ id: id}, function (err, transaction){
+        transaction.delete();
+    });
+};
+
 
 module.exports = router;

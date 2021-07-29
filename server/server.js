@@ -1,7 +1,6 @@
 const express = require("express");
 const UserRouter = require("./routes/UserRouter");
 const ArticleRouter = require("./routes/ArticleRouter");
-const WeatherRouter = require("./routes/WeatherRouter");
 const PaymentRouter = require("./routes/PaymentRouter");
 const MerchantRouter = require("./routes/MerchantRouter");
 const CredentialRouter = require("./routes/CredentialRouter");
@@ -29,7 +28,6 @@ app.use("/transactions", TransactionRouter);
 app.use(verifyAuthorization);
 app.use("/users", UserRouter);
 app.use("/articles", ArticleRouter);
-app.use("/weathers", WeatherRouter);
 app.use("/payment", PaymentRouter);
 app.use("/credentials", CredentialRouter);
 app.use("/operations", OperationRouter);

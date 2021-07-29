@@ -46,6 +46,7 @@ router.post("/", (req, res) => {
 
 router.get("/:id", (request, response) => {
     const {id} = request.params;
+    console.log(id);
     Merchant.findByPk(id)
         .then((data) =>
             data === null ? response.sendStatus(404) : response.json(data)

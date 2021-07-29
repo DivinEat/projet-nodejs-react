@@ -2,6 +2,7 @@ const {Schema} = require("mongoose");
 const conn = require("../../lib/mongo");
 
 const TransactionSchema = new Schema({
+    id: Number,
     consumer: String,
     shippingAddress: String,
     billingAddress: String,

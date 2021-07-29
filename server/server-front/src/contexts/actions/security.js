@@ -1,4 +1,6 @@
 export function fetch_api(input, method, body) {
+    console.log(`http://localhost:3001/${input}`);
+
     const init = {
         method: method,
         headers: {
