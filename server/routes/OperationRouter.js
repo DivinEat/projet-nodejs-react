@@ -1,15 +1,21 @@
-const { Router } = require("express");
-const { Operation } = require("../models/sequelize");
-const { prettifyValidationErrors } = require("../lib/utils");
+const {Router} = require("express");
+const {Operation} = require("../models/sequelize");
+const {prettifyValidationErrors} = require("../lib/utils");
 
 const router = Router();
 
 router.get("/", (request, response) => {
     Operation.findAll({
-        where: request.query,
+        where: {transactionId: request.query.transactionId},
     })
-        .then((data) => response.json(data))
-        .catch((e) => response.sendStatus(500));
+        .then((data) => {
+            return response ? response.json(data) : null;
+        })
+        .catch((e) => {
+            console.log(e);
+            response.sendStatus(500)
+        });
+
 });
 
 router.post("/", (req, res) => {
@@ -27,7 +33,7 @@ router.post("/", (req, res) => {
 });
 
 router.get("/:id", (request, response) => {
-    const { id } = request.params;
+    const {id} = request.params;
     Operation.findByPk(id)
         .then((data) => (data === null ? response.sendStatus(404) : response.json(data)))
         .catch((e) => response.sendStatus(500));

@@ -123,8 +123,6 @@ router.get("/merchant", (request, response) => {
     TransactionMongo.find({merchantId: request.merchant.id}).exec()
         .then(
             (data) => {
-                console.log("data")
-                console.log(data)
                 data === null ? response.sendStatus(404) : response.json(data)
             }
         )
@@ -189,8 +187,6 @@ router.post("/merchant-search", (request, response) => {
     TransactionMongo.find(query).exec()
         .then(
             (data) => {
-                console.log("data");
-                console.log(data);
                 data === null ? response.sendStatus(404) : response.json(data)
             }
         )

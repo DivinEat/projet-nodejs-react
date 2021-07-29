@@ -2,7 +2,6 @@ const verifJWT = require("../lib/security").verifJWT;
 
 module.exports = function verifyAuthorization(req, res, next) {
     const authorization = req.headers["Authorization"] ?? req.headers["authorization"];
-
     if (!authorization) {
         res.sendStatus(401);
         return;

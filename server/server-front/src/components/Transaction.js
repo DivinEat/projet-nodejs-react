@@ -29,6 +29,7 @@ const Transaction = ({merchant}) => {
     const [modalHistory, setModalHistory] = useState(false);
 
     const getOperations = (transactionId) => {
+        console.log('id:' + transactionId);
         fetch_api(`operations?${new URLSearchParams({transactionId: transactionId})}`,
             'GET',
             null
@@ -95,8 +96,8 @@ const Transaction = ({merchant}) => {
                         <li key={transaction._id}>
                             {transaction.consumer} {transaction.shippingAddress} {transaction.billingAddress}
                             {transaction.cart} {transaction.totalPrice} {transaction.currency} {transaction.status}
-                            <Button title="Show operations" onClick={() => getOperations(transaction._id)}/>
-                            <Button title="Show history" onClick={() => getHistory(transaction._id)}/>
+                            <Button title="Show operations" onClick={() => getOperations(transaction.id)}/>
+                            <Button title="Show history" onClick={() => getHistory(transaction.id)}/>
                         </li>
                     ))}
                 </ul>
